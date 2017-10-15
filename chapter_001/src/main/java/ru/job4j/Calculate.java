@@ -7,21 +7,21 @@ package ru.job4j;
 * @author - b.savelev
 */
 public class Calculate {
-	
+
 	/**
 	* Вывод на консоль фразы Hello world.
 	* @param args - аргументы командной строки.
 	*/
-	public static void main (String[] args){
+	public static void main(String[] args) {
 		System.out.println("Hello world!");
 	}
-	
+
 	/**
-	* Method echo
+	* Method echo.
 	* @param name Your name
 	* @return Echo plus your name
 	*/
-	public String echo (String name) {
+	public String echo(String name) {
 		return "Echo, echo, echo: " + name;
 	}
 }
