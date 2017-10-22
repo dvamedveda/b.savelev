@@ -49,6 +49,6 @@ public class Point {
      * @return boolean нахождение точки на функции
      */
     public boolean is(int a, int b) {
-        return (this.getY() == a * this.getX() + b);
+        return (this.y == a * this.x + b);
     }
 }
