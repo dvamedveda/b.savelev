@@ -37,4 +37,16 @@ public class MaxTest {
         int result = max.max(1, 4);
         assertThat(expected, is(result));
     }
+
+    /**
+     * Тест проверящющий поведение метода Max.max().
+     * Проверяет случай, когда максимальным является третий параметр.
+     */
+    @Test
+    public void whenThirdMaxThenReturnsThird() {
+        Max max = new Max();
+        int expected = 11;
+        int result = max.max(1, 4, 11);
+        assertThat(expected, is(result));
+    }
 }
