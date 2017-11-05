@@ -21,7 +21,19 @@ public class BubbleSortTest {
     @Test
     public void whenSortTenNumbersArrayThenSortIt() {
         BubbleSort bubbleSort = new BubbleSort();
-        int[] result = bubbleSort.sort(new int[]{2, 5, 9, 7, 4, 8, 1, 3, 6, 0});
+        int[] result = bubbleSort.sort(new int[]{2, 5, 0, 7, 4, 8, 1, 3, 6, 9});
+        int[] expected = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест метода Bubble.sort().
+     * Проверяет сортировку уже отсортированного массива из 10 чисел.
+     */
+    @Test
+    public void whenSortSortedArrayThenNotSortIt() {
+        BubbleSort bubbleSort = new BubbleSort();
+        int[] result = bubbleSort.sort(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
         int[] expected = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         assertThat(result, is(expected));
     }
