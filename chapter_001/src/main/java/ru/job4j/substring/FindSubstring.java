@@ -20,9 +20,7 @@ public class FindSubstring {
     public boolean contains(String original, String substring) {
         boolean result = false;
 
-        if (original.isEmpty() || substring.isEmpty() || original.length() < substring.length()) {
-            return result;
-        } else {
+        if (!original.isEmpty() && !substring.isEmpty() && original.length() >= substring.length()) {
             char[] originalChars = original.toLowerCase().toCharArray();
             char[] subChars = substring.toLowerCase().toCharArray();
             boolean matches = false;
