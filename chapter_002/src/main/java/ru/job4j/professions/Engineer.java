@@ -70,7 +70,7 @@ public class Engineer extends Profession {
             years = " лет.";
         }
 
-        return this.introduceSelf() + " Мне " + Integer.toString(this.age) + years;
+        return super.introduceSelf() + " Мне " + Integer.toString(this.age) + years;
     }
 
     /**
