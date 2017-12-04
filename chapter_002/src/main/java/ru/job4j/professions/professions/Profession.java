@@ -1,4 +1,4 @@
-package ru.job4j.professions;
+package ru.job4j.professions.professions;
 
 /**
  * Класс, объединяющий общие признаки специалистов разных профессий.
@@ -13,6 +13,16 @@ public class Profession {
      * Вид деятельности специалиста.
      */
     private String specialization;
+
+    /**
+     * Конструктор класса профессии.
+     * @param name имя специалиста.
+     * @param specialization род деятельности специалиста.
+     */
+    public Profession(String name, String specialization) {
+        this.name = name;
+        this.specialization = specialization;
+    }
 
     /**
      * Представиться.

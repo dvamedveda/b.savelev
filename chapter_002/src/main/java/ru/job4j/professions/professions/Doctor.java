@@ -1,4 +1,8 @@
-package ru.job4j.professions;
+package ru.job4j.professions.professions;
+
+import ru.job4j.professions.common.Diagnose;
+import ru.job4j.professions.common.Patient;
+import ru.job4j.professions.common.Queue;
 
 /**
  * Класс, описывающий доктора.
@@ -9,6 +13,18 @@ public class Doctor extends Profession {
      * Очередь пациентов.
      */
     private Queue queue;
+
+    /**
+     * Конструктор класса Doctor.
+     * Использует конструктор суперкласса для инициализации основных полей.
+     * @param name имя специалиста.
+     * @param specialization род деятельности специалиста.
+     * @param queue очередь пациентов
+     */
+    public Doctor(String name, String specialization, Queue queue) {
+        super(name, specialization);
+        this.queue = queue;
+    }
 
     /**
      * Принять пациента, вернуть диагноз

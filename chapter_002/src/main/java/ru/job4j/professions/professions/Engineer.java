@@ -1,4 +1,6 @@
-package ru.job4j.professions;
+package ru.job4j.professions.professions;
+
+import ru.job4j.professions.common.Task;
 
 /**
  * Класс, описывающий инженера.
@@ -19,6 +21,22 @@ public class Engineer extends Profession {
      * Текущая задача.
      */
     private Task currentTask;
+
+    /**
+     * Конструктор класса Engineer.
+     * Использует конструктор суперкласса для инициализации основных полей.
+     * @param name имя специалиста.
+     * @param specialization род деятельности специалиста.
+     * @param age возраст специалиста.
+     * @param isWorkingNow занят ли сейчас специалист работой.
+     * @param task текущая задача специалиста.
+     */
+    public Engineer(String name, String specialization, int age, boolean isWorkingNow, Task task) {
+        super(name, specialization);
+        this.age = age;
+        this.isWorkingNow = isWorkingNow;
+        this.currentTask = currentTask();
+    }
 
     /**
      * Начать работу над задачей.

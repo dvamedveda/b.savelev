@@ -1,4 +1,7 @@
-package ru.job4j.professions;
+package ru.job4j.professions.professions;
+
+import ru.job4j.professions.common.Student;
+import ru.job4j.professions.common.Task;
 
 /**
  * Вспомогательный класс, описывающий учителя.
@@ -19,6 +22,12 @@ public class Teacher extends Profession {
      */
     private Student whoTeached;
 
+    public Teacher(String name, String specialization, int age, boolean isTeaching, Student whoTeached) {
+        super(name, specialization);
+        this.age = age;
+        this.isTeaching = isTeaching;
+        this.whoTeached = whoTeached;
+    }
 
     /**
      * Выдать домашнее задание.

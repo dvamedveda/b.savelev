@@ -1,4 +1,4 @@
-package ru.job4j.professions;
+package ru.job4j.professions.common;
 
 /**
  * Вспомогательный класс, описывающий пациента.
