@@ -39,11 +39,11 @@ public class TrackerTest {
         Item newItem = new Item("Измененная тестовая заявка", "Измененное тестовое описание заявки", 54321L);
         newItem.setId(updatedItem.getId());
         tracker.update(newItem);
+        Item foundedItem = tracker.findById(updatedItem.getId());
 
-
-        assertThat(tracker.findById(updatedItem.getId()).getSummary(), is("Измененная тестовая заявка"));
-        assertThat(tracker.findById(updatedItem.getId()).getDescription(), is("Измененное тестовое описание заявки"));
-        assertThat(tracker.findById(updatedItem.getId()).getCreated(), is(54321L));
+        assertThat(foundedItem.getSummary(), is("Измененная тестовая заявка"));
+        assertThat(foundedItem.getDescription(), is("Измененное тестовое описание заявки"));
+        assertThat(foundedItem.getCreated(), is(54321L));
     }
 
     /**
