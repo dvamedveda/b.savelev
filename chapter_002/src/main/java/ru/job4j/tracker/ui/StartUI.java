@@ -21,17 +21,25 @@ public class StartUI {
     /**
      * Объект для запроса ввода пользователя.
      */
-    private ConsoleInput ui = new ConsoleInput();
+    private Input ui;
 
     /**
      * Объект, для управления заявками.
      */
-    private Tracker tracker = new Tracker();
+    private Tracker tracker;
+
+    /**
+     * Конструктор класса StartUI.
+     */
+    public StartUI(Tracker tracker, Input input) {
+        this.tracker = tracker;
+        this.ui = input;
+    }
 
     /**
      * Основной цикл работы программы.
      */
-    private void startWork() {
+    public void startWork() {
         boolean working = true;
 
         do {
@@ -47,13 +55,13 @@ public class StartUI {
                     this.deleteItem();
                     break;
                 case FINDALL:
-                    this.findAllItems();
+                    this.printItemList(this.findAllItems());
                     break;
                 case FINDBYNAME:
-                    this.findByName();
+                    this.printItemList(this.findByName());
                     break;
                 case FINDBYID:
-                    this.findByID();
+                    this.printItem(this.findByID());
                     break;
                 case EXIT:
                     working = this.exit();
@@ -135,50 +143,51 @@ public class StartUI {
 
     /**
      * Обработка запроса пользователя на отображение всех заявок.
+     * @return список всех найденных заявок
      */
-    private void findAllItems() {
+    public Item[] findAllItems() {
         System.out.println("Выбран пункт меню 4. Поиск всех заявок.");
+        Item[] result;
         if (this.tracker.findAll().length > 0) {
-            Item[] allItems = this.tracker.findAll();
-            System.out.println("Найдены следующие заявки : ");
-            for (Item nextFoundItem : allItems) {
-                this.printItem(nextFoundItem);
-            }
+            result = this.tracker.findAll();
         } else {
-            System.out.println("На данный момент не существует никаких заявок.");
+            result = null;
         }
+        return result;
     }
 
     /**
      * Обработка запроса пользователя на отображение заявки по указанному названию.
+     * @return список найденных по имени заявок
      */
-    private void findByName() {
+    public Item[] findByName() {
         System.out.println("Выбран пункт меню 5. Поиск заявки по названию.");
+        Item[] result;
         String itemName = this.ui.ask("Введите название заявки : ");
         if (this.tracker.findByName(itemName) != null) {
-            Item[] foundedItems = this.tracker.findByName(itemName);
-            System.out.println("Найдены следующие заявки : ");
-            for (Item nextFoundItem : foundedItems) {
-                this.printItem(nextFoundItem);
-            }
+            result = this.tracker.findByName(itemName);
         } else {
-            System.out.println("Заявки с таким названием не найдено!");
+           result = null;
         }
+        return result;
     }
 
     /**
      * Обработка запроса пользователя на отображение заявки по указанному идентификатору.
+     * @return найденная заявка
      */
-    private void findByID() {
+    public Item findByID() {
         System.out.println("Выбран пункт меню 6. Поиск заявки по ID.");
+        Item result;
         String searchId = this.ui.ask("Введите ID заявки : ");
         if (this.tracker.findById(searchId) != null) {
-            Item foundedItem = this.tracker.findById(searchId);
+            result = this.tracker.findById(searchId);
             System.out.println("Найдена заявка : ");
-            this.printItem(foundedItem);
         } else {
             System.out.println("Заявки с таким ID не найдено!");
+            result = null;
         }
+        return result;
     }
 
     /**
@@ -198,14 +207,31 @@ public class StartUI {
      * @param item заявка, содержмиое которой нужно отобразить.
      */
     private void printItem(Item item) {
-        System.out.println("-----------------------------------------------------------------------------------------");
-        System.out.println("Заявка с идентификатором " + item.getId());
-        System.out.println("Название заявки: " + item.getSummary());
-        System.out.println("-----------------------------------------------------------------------------------------");
-        System.out.println("Описание заявки:");
-        System.out.println(item.getDescription());
-        System.out.println("-----------------------------------------------------------------------------------------");
-        System.out.println();
+        if (item != null) {
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println("Заявка с идентификатором " + item.getId());
+            System.out.println("Название заявки: " + item.getSummary());
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println("Описание заявки:");
+            System.out.println(item.getDescription());
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println();
+        }
+    }
+
+    /**
+     * Распечатка списка заявок.
+     * @param items массив заявок, которые нужно распечатать.
+     */
+    private void printItemList(Item[] items) {
+        if (items != null) {
+            System.out.println("Найдены следующие заявки : ");
+            for (Item item : items) {
+                this.printItem(item);
+            }
+        } else {
+            System.out.println("Заявок не найдено!");
+        }
     }
 
     /**
@@ -215,7 +241,9 @@ public class StartUI {
      * @param args параметры запуска.
      */
     public static void main(String[] args) {
-        StartUI startUI = new StartUI();
+        Tracker tracker = new Tracker();
+        Input input = new ConsoleInput();
+        StartUI startUI = new StartUI(tracker, input);
         startUI.startWork();
     }
 }
