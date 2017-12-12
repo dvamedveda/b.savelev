@@ -55,13 +55,13 @@ public class StartUI {
                     this.deleteItem();
                     break;
                 case FINDALL:
-                    this.printItemList(this.findAllItems());
+                    this.findAllItems();
                     break;
                 case FINDBYNAME:
-                    this.printItemList(this.findByName());
+                    this.findByName();
                     break;
                 case FINDBYID:
-                    this.printItem(this.findByID());
+                    this.findByID();
                     break;
                 case EXIT:
                     working = this.exit();
@@ -143,51 +143,50 @@ public class StartUI {
 
     /**
      * Обработка запроса пользователя на отображение всех заявок.
-     * @return список всех найденных заявок
      */
-    public Item[] findAllItems() {
+    private void findAllItems() {
         System.out.println("Выбран пункт меню 4. Поиск всех заявок.");
-        Item[] result;
         if (this.tracker.findAll().length > 0) {
-            result = this.tracker.findAll();
+            Item[] allItems = this.tracker.findAll();
+            System.out.println("Найдены следующие заявки : ");
+            for (Item nextFoundItem : allItems) {
+                this.printItem(nextFoundItem);
+            }
         } else {
-            result = null;
+            System.out.println("На данный момент не существует никаких заявок.");
         }
-        return result;
     }
 
     /**
      * Обработка запроса пользователя на отображение заявки по указанному названию.
-     * @return список найденных по имени заявок
      */
-    public Item[] findByName() {
+    private void findByName() {
         System.out.println("Выбран пункт меню 5. Поиск заявки по названию.");
-        Item[] result;
         String itemName = this.ui.ask("Введите название заявки : ");
         if (this.tracker.findByName(itemName) != null) {
-            result = this.tracker.findByName(itemName);
+            Item[] foundedItems = this.tracker.findByName(itemName);
+            System.out.println("Найдены следующие заявки : ");
+            for (Item nextFoundItem : foundedItems) {
+                this.printItem(nextFoundItem);
+            }
         } else {
-           result = null;
+            System.out.println("Заявки с таким названием не найдено!");
         }
-        return result;
     }
 
     /**
      * Обработка запроса пользователя на отображение заявки по указанному идентификатору.
-     * @return найденная заявка
      */
-    public Item findByID() {
+    private void findByID() {
         System.out.println("Выбран пункт меню 6. Поиск заявки по ID.");
-        Item result;
         String searchId = this.ui.ask("Введите ID заявки : ");
         if (this.tracker.findById(searchId) != null) {
-            result = this.tracker.findById(searchId);
+            Item foundedItem = this.tracker.findById(searchId);
             System.out.println("Найдена заявка : ");
+            this.printItem(foundedItem);
         } else {
             System.out.println("Заявки с таким ID не найдено!");
-            result = null;
         }
-        return result;
     }
 
     /**
@@ -216,21 +215,6 @@ public class StartUI {
             System.out.println(item.getDescription());
             System.out.println("------------------------------------------------------------------------");
             System.out.println();
-        }
-    }
-
-    /**
-     * Распечатка списка заявок.
-     * @param items массив заявок, которые нужно распечатать.
-     */
-    private void printItemList(Item[] items) {
-        if (items != null) {
-            System.out.println("Найдены следующие заявки : ");
-            for (Item item : items) {
-                this.printItem(item);
-            }
-        } else {
-            System.out.println("Заявок не найдено!");
         }
     }
 
