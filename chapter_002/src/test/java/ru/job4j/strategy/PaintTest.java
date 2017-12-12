@@ -1,5 +1,7 @@
 package ru.job4j.strategy;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -16,29 +18,44 @@ import static org.junit.Assert.assertThat;
  * @since 0.1
  */
 public class PaintTest {
+    private final PrintStream stdout = System.out;
+    private final ByteArrayOutputStream byteout = new ByteArrayOutputStream();
+    private final String delimiter = System.lineSeparator();
+
+    /**
+     * Устанавливаем новый поток вывода.
+     */
+    @Before
+    public void loadByteOut() {
+        System.out.println("Executing before test...");
+        System.setOut(new PrintStream(this.byteout));
+    }
+
+    /**
+     * Возвращаем стандартный поток вывода.
+     */
+    @After
+    public void loadStandartOut() {
+        System.setOut(stdout);
+        System.out.println("Executing after test...");
+    }
 
     /**
      * Тест, проверяющий вывод на консоль квадрата при использовании класса Paint и передачи ему квадрата.
      */
     @Test
     public void whenUseSquareThenStrategyDrawsSquare() {
-        PrintStream stdout = System.out;
-        ByteArrayOutputStream byteout = new ByteArrayOutputStream();
-        String delimiter = System.lineSeparator();
-
-        System.setOut(new PrintStream(byteout));
         new Paint(new Square()).drawShape();
-        String result = new String(byteout.toByteArray());
+        String result = new String(this.byteout.toByteArray());
         String expected = new StringBuilder()
-                .append("#########").append(delimiter)
-                .append("#########").append(delimiter)
-                .append("#########").append(delimiter)
-                .append("#########").append(delimiter)
-                .append("#########").append(delimiter)
-                .append(delimiter)
+                .append("#########").append(this.delimiter)
+                .append("#########").append(this.delimiter)
+                .append("#########").append(this.delimiter)
+                .append("#########").append(this.delimiter)
+                .append("#########").append(this.delimiter)
+                .append(this.delimiter)
                 .toString();
         assertThat(result, is(expected));
-        System.setOut(stdout);
     }
 
     /**
@@ -46,22 +63,16 @@ public class PaintTest {
      */
     @Test
     public void whenUseTrinagleThenStrategyDrawsTriangle() {
-        PrintStream stdout = System.out;
-        ByteArrayOutputStream byteout = new ByteArrayOutputStream();
-        String delimiter = System.lineSeparator();
-
-        System.setOut(new PrintStream(byteout));
         new Paint(new Triangle()).drawShape();
-        String result = new String(byteout.toByteArray());
+        String result = new String(this.byteout.toByteArray());
         String expected = new StringBuilder()
-                .append("    #    ").append(delimiter)
-                .append("   ###   ").append(delimiter)
-                .append("  #####  ").append(delimiter)
-                .append(" ####### ").append(delimiter)
-                .append("#########").append(delimiter)
-                .append(delimiter)
+                .append("    #    ").append(this.delimiter)
+                .append("   ###   ").append(this.delimiter)
+                .append("  #####  ").append(this.delimiter)
+                .append(" ####### ").append(this.delimiter)
+                .append("#########").append(this.delimiter)
+                .append(this.delimiter)
                 .toString();
         assertThat(result, is(expected));
-        System.setOut(stdout);
     }
 }
