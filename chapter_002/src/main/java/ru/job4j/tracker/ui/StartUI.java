@@ -80,7 +80,7 @@ public class StartUI {
      */
     private void showMenu() {
         System.out.println();
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++");
         System.out.println("Меню программы :");
         System.out.println("1. Создание новой заявки.");
         System.out.println("2. Обновление существующей заявки.");
@@ -89,7 +89,7 @@ public class StartUI {
         System.out.println("5. Поиск заявки по названию.");
         System.out.println("6. Поиск заявки по ID.");
         System.out.println("0. Выход из программы");
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++");
         System.out.println();
     }
 
@@ -207,13 +207,13 @@ public class StartUI {
      */
     private void printItem(Item item) {
         if (item != null) {
-            System.out.println("------------------------------------------------------------------------");
+            System.out.println("---------------------------------");
             System.out.println("Заявка с идентификатором " + item.getId());
             System.out.println("Название заявки: " + item.getSummary());
-            System.out.println("------------------------------------------------------------------------");
+            System.out.println("---------------------------------");
             System.out.println("Описание заявки:");
             System.out.println(item.getDescription());
-            System.out.println("------------------------------------------------------------------------");
+            System.out.println("---------------------------------");
             System.out.println();
         }
     }
