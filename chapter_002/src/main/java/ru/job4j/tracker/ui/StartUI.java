@@ -11,7 +11,7 @@ public class StartUI {
      * Флажок для выхода.
      * Программа работает до тех пор, пока значение истинно.
      */
-    static volatile boolean working = true;
+    static boolean working = true;
 
     /**
      * Объект для запроса ввода пользователя.
