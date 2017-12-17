@@ -1,6 +1,8 @@
 package ru.job4j.tracker.ui;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories;
 import ru.job4j.tracker.tracker.Item;
 import ru.job4j.tracker.tracker.Tracker;
 
@@ -38,13 +40,13 @@ public class StubInputTest {
     private final String menu = new StringBuilder()
             .append("+++++++++++++++++++++++++++++++++").append(delimiter)
             .append("Меню программы :").append(delimiter)
+            .append("0. Выход из программы.").append(delimiter)
             .append("1. Создание новой заявки.").append(delimiter)
             .append("2. Обновление существующей заявки.").append(delimiter)
             .append("3. Удаление заявки по ее ID.").append(delimiter)
             .append("4. Поиск всех заявок.").append(delimiter)
             .append("5. Поиск заявки по названию.").append(delimiter)
             .append("6. Поиск заявки по ID.").append(delimiter)
-            .append("0. Выход из программы").append(delimiter)
             .append("+++++++++++++++++++++++++++++++++").append(delimiter)
             .append(delimiter)
             .toString();
@@ -145,8 +147,6 @@ public class StubInputTest {
         Item firstItem = tracker.findAll()[0];
         Input input = new StubInput(new String[]{"4", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
-        ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
                 .append(this.menu)
@@ -160,6 +160,8 @@ public class StubInputTest {
                 .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
                 .append(delimiter)
                 .toString();
+        StartUI ui = new StartUI(tracker, input);
+        ui.startWork();
         String result = new String(this.byteout.toByteArray());
         assertThat(expected, is(result));
         this.loadStandartOut();
@@ -223,7 +225,7 @@ public class StubInputTest {
                 .append(delimiter)
                 .toString();
         String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
+        assertThat(result, is(expected));
         this.loadStandartOut();
     }
 
@@ -362,10 +364,12 @@ public class StubInputTest {
     public void whenSearchByIdAndHaveNoItemsWithIdThenFindNothing() {
         Tracker tracker = new Tracker();
         tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Input input = new StubInput(new String[]{"6", "123456789", "0"});
+        String unexistId = "123456789";
+        Input input = new StubInput(new String[]{"6", unexistId, "0"});
         this.loadByteOut();
         StartUI ui = new StartUI(tracker, input);
         ui.startWork();
+        String result = new String(this.byteout.toByteArray());
         String expected = new StringBuilder()
                 .append(delimiter)
                 .append(this.menu)
@@ -378,7 +382,6 @@ public class StubInputTest {
                 .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
                 .append(delimiter)
                 .toString();
-        String result = new String(this.byteout.toByteArray());
         assertThat(expected, is(result));
         this.loadStandartOut();
     }
