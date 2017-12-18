@@ -11,7 +11,7 @@ public class StartUI {
      * Флажок для выхода.
      * Программа работает до тех пор, пока значение истинно.
      */
-    static boolean working = true;
+    static boolean working;
 
     /**
      * Объект для запроса ввода пользователя.
@@ -36,6 +36,7 @@ public class StartUI {
      */
     public void startWork() {
 
+        StartUI.working = true;
         MenuTracker menu = new MenuTracker(this.ui, this.tracker);
         menu.fillActions();
 
