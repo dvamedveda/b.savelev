@@ -37,4 +37,29 @@ public class StubInput implements Input {
         index++;
         return answer;
     }
+
+    /**
+     * Метод, запрашивающий от пользователя пункт меню и проверяющий, существует ли такой пункт меню.
+     * @param question вопрос, задаваемый пользователю.
+     * @param range диапазон допустимых значений.
+     * @return один из существующих пунктов меню.
+     */
+    @Override
+    public int ask(String question, int[] range) {
+        boolean contains = false;
+        int result = 1;
+        int key = Integer.parseInt(this.ask(question));
+        for (int nextInt : range) {
+            if (nextInt == key) {
+                contains = true;
+                break;
+            }
+        }
+        if (contains) {
+            result = key;
+        } else {
+            System.out.println("Неизвестный пункт меню.");
+        }
+        return result;
+    }
 }

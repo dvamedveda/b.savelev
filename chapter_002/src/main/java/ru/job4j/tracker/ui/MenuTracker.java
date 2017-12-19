@@ -54,6 +54,18 @@ public class MenuTracker {
     }
 
     /**
+     * Геттер для получения диапазона допустимых для ыбора пользователем пунктов меню.
+     * @return диапазон допустимых пунктов меню.
+     */
+    public int[] getOptions() {
+        int[] result = new int[this.actions.length];
+        for (int index = 0; index < this.actions.length; index++) {
+            result[index] = this.actions[index].key();
+        }
+        return result;
+    }
+
+    /**
      * Наполнение массива действий доступными действиями.
      */
     public void fillActions() {

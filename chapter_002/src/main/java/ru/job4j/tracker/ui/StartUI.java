@@ -35,8 +35,7 @@ public class StartUI {
 
         do {
             menu.showMenu();
-            String answer = this.ui.ask("Введите номер пункта меню для продолжения...");
-            int key = Integer.valueOf(answer);
+            int key = this.ui.ask("Введите номер пункта меню для продолжения...", menu.getOptions());
             exit = key == 0;
             menu.select(key);
         } while (!exit);
@@ -50,7 +49,7 @@ public class StartUI {
      */
     public static void main(String[] args) {
         Tracker tracker = new Tracker();
-        Input input = new ConsoleInput();
+        Input input = new ValidateInput();
         StartUI startUI = new StartUI(tracker, input);
         startUI.startWork();
     }
