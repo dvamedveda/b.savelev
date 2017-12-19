@@ -8,12 +8,6 @@ import ru.job4j.tracker.tracker.*;
 public class StartUI {
 
     /**
-     * Флажок для выхода.
-     * Программа работает до тех пор, пока значение истинно.
-     */
-    static boolean working;
-
-    /**
      * Объект для запроса ввода пользователя.
      */
     private Input ui;
@@ -35,8 +29,7 @@ public class StartUI {
      * Основной цикл работы программы.
      */
     public void startWork() {
-
-        StartUI.working = true;
+        boolean exit;
         MenuTracker menu = new MenuTracker(this.ui, this.tracker);
         menu.fillActions();
 
@@ -44,8 +37,9 @@ public class StartUI {
             menu.showMenu();
             String answer = this.ui.ask("Введите номер пункта меню для продолжения...");
             int key = Integer.valueOf(answer);
+            exit = key == 0;
             menu.select(key);
-        } while (working);
+        } while (!exit);
     }
 
     /**

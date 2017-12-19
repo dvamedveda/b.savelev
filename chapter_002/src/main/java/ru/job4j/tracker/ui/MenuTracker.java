@@ -23,7 +23,6 @@ class Exit implements UserAction {
      */
     public void execute(Input input, Tracker tracker) {
         System.out.println("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-");
-        StartUI.working = false;
     }
 
     /**
