@@ -47,7 +47,7 @@ public class StubInput implements Input {
     @Override
     public int ask(String question, int[] range) {
         boolean contains = false;
-        int result = 1;
+        int result;
         int key = Integer.parseInt(this.ask(question));
         for (int nextInt : range) {
             if (nextInt == key) {
@@ -58,7 +58,7 @@ public class StubInput implements Input {
         if (contains) {
             result = key;
         } else {
-            System.out.println("Неизвестный пункт меню.");
+            throw new MenuOutException("Неизвестный пункт меню.");
         }
         return result;
     }
