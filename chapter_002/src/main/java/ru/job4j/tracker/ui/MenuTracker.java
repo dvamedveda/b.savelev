@@ -108,13 +108,13 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 1. Создание новой заявки.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             System.out.println("Перед добавлением заявку нужно заполнить!");
             String summary = input.ask("Введите название заявки :");
             String description = input.ask("Введите описание заявки :");
             long createdTime = System.currentTimeMillis();
             Item addedItem = tracker.add(new Item(summary, description, createdTime));
-            System.out.println("Заявка с идентификатором " + addedItem.getId() + " успешно добавлена.");
+            System.out.println(String.format("Заявка с идентификатором %s успешно добавлена.",  addedItem.getId()));
         }
 
         public String info() {
@@ -132,7 +132,7 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 2. Обновление существующей заявки.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String updateId = input.ask("Введите ID заявки : ");
             if (tracker.findById(updateId) != null) {
                 System.out.println("Найдена заявка : ");
@@ -164,11 +164,11 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 3. Удаление заявки по ее ID.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String deleteId = input.ask("Введите ID заявки : ");
             if (tracker.findById(deleteId) != null) {
                 tracker.delete(tracker.findById(deleteId));
-                System.out.println("Заявка с идентификатором " + deleteId + " удалена.");
+                System.out.println(String.format("Заявка с идентификатором %s удалена.", deleteId));
             } else {
                 System.out.println("Заявки с таким ID не найдено!");
             }
@@ -189,7 +189,7 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 4. Поиск всех заявок.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             if (tracker.findAll().length > 0) {
                 Item[] allItems = tracker.findAll();
                 System.out.println("Найдены следующие заявки : ");
@@ -216,7 +216,7 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 5. Поиск заявки по названию.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String itemName = input.ask("Введите название заявки : ");
             if (tracker.findByName(itemName) != null) {
                 Item[] foundedItems = tracker.findByName(itemName);
@@ -244,7 +244,7 @@ public class MenuTracker {
         }
 
         public void execute(Input input, Tracker tracker) {
-            System.out.println("Выбран пункт меню 6. Поиск заявки по ID.");
+            System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String searchId = input.ask("Введите ID заявки : ");
             if (tracker.findById(searchId) != null) {
                 Item foundedItem = tracker.findById(searchId);
@@ -273,8 +273,8 @@ public class MenuTracker {
         public static void printItem(Item item) {
             if (item != null) {
                 System.out.println("---------------------------------");
-                System.out.println("Заявка с идентификатором " + item.getId());
-                System.out.println("Название заявки: " + item.getSummary());
+                System.out.println(String.format("Заявка с идентификатором %s", item.getId()));
+                System.out.println(String.format("Название заявки: %s", item.getSummary()));
                 System.out.println("---------------------------------");
                 System.out.println("Описание заявки:");
                 System.out.println(item.getDescription());
