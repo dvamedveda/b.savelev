@@ -7,13 +7,10 @@ import ru.job4j.tracker.tracker.Tracker;
  * "Внешний" внутренний класс.
  * Описывает действие программы в случае выбора пункта меню "Выход из программы"
  */
-class Exit implements UserAction {
-    /**
-     * Действие пользователя в массиве возможных действий.
-     * @return номер действия
-     */
-    public int key() {
-        return 0;
+class Exit extends BaseAction {
+
+    public Exit(int key, String name) {
+        super(key, name);
     }
 
     /**
@@ -23,14 +20,6 @@ class Exit implements UserAction {
      */
     public void execute(Input input, Tracker tracker) {
         System.out.println("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-");
-    }
-
-    /**
-     * Распечатка информации для меню.
-     * @return информация для меню.
-     */
-    public String info() {
-        return String.format("%s. %s", this.key(), "Выход из программы.");
     }
 }
 
@@ -69,13 +58,13 @@ public class MenuTracker {
      * Наполнение массива действий доступными действиями.
      */
     public void fillActions() {
-        this.actions[0] = new Exit();
-        this.actions[1] = this.new AddItem();
-        this.actions[2] = this.new UpdateItem();
-        this.actions[3] = this.new DeleteItem();
-        this.actions[4] = this.new FindAllItems();
-        this.actions[5] = this.new FindByName();
-        this.actions[6] = this.new FindById();
+        this.actions[0] = new Exit(0, "Выход из программы.");
+        this.actions[1] = this.new AddItem(1, "Создание новой заявки.");
+        this.actions[2] = this.new UpdateItem(2, "Обновление существующей заявки.");
+        this.actions[3] = this.new DeleteItem(3, "Удаление заявки по ее ID.");
+        this.actions[4] = this.new FindAllItems(4, "Поиск всех заявок.");
+        this.actions[5] = this.new FindByName(5, "Поиск заявки по названию.");
+        this.actions[6] = this.new FindById(6, "Поиск заявки по ID.");
     }
 
     public void select(int key) {
@@ -99,12 +88,12 @@ public class MenuTracker {
     }
 
     /**
-     * В этом классе описывается действие пользователя "Добавление заявки".
+     * В этом классе реализуется действие пользователя "Добавление заявки".
      */
-    private class AddItem implements UserAction {
+    private class AddItem extends BaseAction {
 
-        public int key() {
-            return 1;
+        public AddItem(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -116,19 +105,15 @@ public class MenuTracker {
             Item addedItem = tracker.add(new Item(summary, description, createdTime));
             System.out.println(String.format("Заявка с идентификатором %s успешно добавлена.",  addedItem.getId()));
         }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Создание новой заявки.");
-        }
     }
 
     /**
-     * В этом классе описывается действие пользователя "Обновление заявки".
+     * В этом классе реализуется действие пользователя "Обновление заявки".
      */
-    private class UpdateItem implements UserAction {
+    private class UpdateItem extends BaseAction {
 
-        public int key() {
-            return 2;
+        public UpdateItem(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -148,19 +133,15 @@ public class MenuTracker {
                 System.out.println("Заявки с таким ID не найдено!");
             }
         }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Обновление существующей заявки.");
-        }
     }
 
     /**
-     * В этом классе описывается действие пользователя "Удаление заявки".
+     * В этом классе реализуется действие пользователя "Удаление заявки".
      */
-    private class DeleteItem implements UserAction {
+    private class DeleteItem extends BaseAction {
 
-        public int key() {
-            return 3;
+        public DeleteItem(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -173,19 +154,15 @@ public class MenuTracker {
                 System.out.println("Заявки с таким ID не найдено!");
             }
         }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Удаление заявки по ее ID.");
-        }
     }
 
     /**
-     * В этом классе описывается действие пользователя "Поиск всех заявок".
+     * В этом классе реализуется действие пользователя "Поиск всех заявок".
      */
-    private class FindAllItems implements UserAction {
+    private class FindAllItems extends BaseAction {
 
-        public int key() {
-            return 4;
+        public FindAllItems(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -200,19 +177,15 @@ public class MenuTracker {
                 System.out.println("На данный момент не существует никаких заявок.");
             }
         }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Поиск всех заявок.");
-        }
     }
 
     /**
-     * В этом классе описывается действие пользователя "Поиск по названию".
+     * В этом классе реализуется действие пользователя "Поиск по названию".
      */
-    private class FindByName implements UserAction {
+    private class FindByName extends BaseAction {
 
-        public int key() {
-            return 5;
+        public FindByName(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -228,19 +201,15 @@ public class MenuTracker {
                 System.out.println("Заявки с таким названием не найдено!");
             }
         }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Поиск заявки по названию.");
-        }
     }
 
     /**
-     * В этом классе описывается действие пользователя "Поиск по Id".
+     * В этом классе реализуется действие пользователя "Поиск по Id".
      */
-    private class FindById implements UserAction {
+    private class FindById extends BaseAction {
 
-        public int key() {
-            return 6;
+        public FindById(int key, String name) {
+            super(key, name);
         }
 
         public void execute(Input input, Tracker tracker) {
@@ -253,10 +222,6 @@ public class MenuTracker {
             } else {
                 System.out.println("Заявки с таким ID не найдено!");
             }
-        }
-
-        public String info() {
-            return String.format("%s. %s", this.key(), "Поиск заявки по ID.");
         }
     }
 
