@@ -5,7 +5,9 @@ import ru.job4j.chess.exceptions.ImpossibleMoveException;
 
 public interface Figure {
 
+    Cell getCurrentCell();
+
     Cell[] wayFromTo(Cell source, Cell dest) throws ImpossibleMoveException;
 
-    Figure placeFigure(Cell position);
+    Figure copy(Cell position);
 }

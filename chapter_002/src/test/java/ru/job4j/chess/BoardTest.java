@@ -26,7 +26,7 @@ public class BoardTest {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(6, 1);
-        board.placeFigure(new Bishop(source), source);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (ImpossibleMoveException ex) {
@@ -39,7 +39,7 @@ public class BoardTest {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(6, 7);
-        board.placeFigure(new Bishop(source), source);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (ImpossibleMoveException ex) {
@@ -52,7 +52,7 @@ public class BoardTest {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(0, 1);
-        board.placeFigure(new Bishop(source), source);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (ImpossibleMoveException ex) {
@@ -65,7 +65,7 @@ public class BoardTest {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(0, 7);
-        board.placeFigure(new Bishop(source), source);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (ImpossibleMoveException ex) {
@@ -78,7 +78,7 @@ public class BoardTest {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(10, 10);
-        board.placeFigure(new Bishop(source), source);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (ImpossibleMoveException ex) {
@@ -90,10 +90,12 @@ public class BoardTest {
     public void whenMoveFigureWithValidOccupiedWayThenMove() throws OccupiedWayException{
         Board board = new Board();
         Cell source = new Cell(3, 4);
-        Cell occupied = new Cell(5, 6);
         Cell dest = new Cell(6, 7);
-        board.placeFigure(new Bishop(source), source);
-        board.placeFigure(new Bishop(occupied), occupied);
+        Cell occupiedSource = new Cell(6, 5);
+        Cell occupiedDest = new Cell(5, 6);
+        board.setCurrentFigure(new Bishop(occupiedSource));
+        board.move(occupiedSource, occupiedDest);
+        board.setCurrentFigure(new Bishop(source));
         try {
             board.move(source, dest);
         } catch (OccupiedWayException ex) {

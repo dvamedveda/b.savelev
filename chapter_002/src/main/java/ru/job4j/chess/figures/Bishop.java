@@ -9,11 +9,15 @@ public class Bishop implements Figure {
 
     private final Cell currentCell;
 
+    public Cell getCurrentCell() {
+        return this.currentCell;
+    }
+
     public Bishop(Cell position) {
         this.currentCell = position;
     }
 
-    public Figure placeFigure(Cell position) {
+    public Figure copy(Cell position) {
          return new Bishop(position);
     }
 
