@@ -50,33 +50,19 @@ public class Board {
      * @throws FigureNotFoundException бросается, если фигура для хода отсутствует.
      */
     public boolean move(Cell source, Cell dest) throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
-
         boolean result = true;
-
         if (fields[source.getX()][source.getY()] == null) {
             result = false;
             throw new FigureNotFoundException();
         }
-
         Figure figure = fields[source.getX()][source.getY()];
-
         Cell[] way = figure.wayFromTo(source, dest);
-
-        if (figure instanceof Knight) {
-            Cell lastCell = way[way.length - 1];
-            if (fields[lastCell.getX()][lastCell.getY()] != null) {
+        for (Cell cell : way) {
+            if (fields[cell.getX()][cell.getY()] != null) {
                 result = false;
                 throw new OccupiedWayException();
             }
-        } else {
-            for (Cell cell : way) {
-                if (fields[cell.getX()][cell.getY()] != null) {
-                    result = false;
-                    throw new OccupiedWayException();
-                }
-            }
         }
-
         this.placeFigure(this.currentFigure, way[way.length - 1]);
         this.fields[source.getX()][source.getY()] = null;
         return result;

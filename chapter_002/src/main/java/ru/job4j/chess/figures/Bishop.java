@@ -52,7 +52,7 @@ public class Bishop implements Figure {
      * Просчитать ход фигуры.
      *
      * @param source исходная клетка на доске.
-     * @param dest   конечная клетка на доске.
+     * @param dest конечная клетка на доске.
      * @return массив ячеек - путь, который нужно пройти фигуре.
      * @throws ImpossibleMoveException бросается, если ход невозможен по правилам.
      */
@@ -62,45 +62,23 @@ public class Bishop implements Figure {
         int y1 = source.getY();
         int x2 = dest.getX();
         int y2 = dest.getY();
-        int waypoints = 0;
-        Cell[] way = new Cell[8];
-
         /*
-        Проверка, может ли фигура ходить так:
-        в любое направление по диагонали на любое количество клеток в пределах доски
+        Проверка, может ли фигура ходить так и просчитываем пройденные клетки.
+        Иначе бросаем исключение.
          */
         if (Math.abs(x1 - x2) != Math.abs(y1 - y2) || (x2 >= 8 || y2 >= 8) || (x2 < 0 || y2 < 0)) {
             throw new ImpossibleMoveException();
         } else {
-            if (x1 < x2 && y1 > y2) {
-                // направление хода вправо-вверх
-                for (int x = x1 + 1, y = y1 - 1, count = waypoints; x <= x2; x++, y--, count++) {
-                    way[count] = new Cell(x, y);
-                }
-            } else if (x1 < x2 && y1 < y2) {
-                // направление хода вправо-вниз
-                for (int x = x1 + 1, y = y1 + 1, count = waypoints; x <= x2; x++, y++, count++) {
-                    way[count] = new Cell(x, y);
-                }
-            } else if (x1 > x2 && y1 < y2) {
-                // направление хода влево-вниз
-                for (int x = x1 - 1, y = y1 + 1, count = waypoints; x >= x2; x--, y++, count++) {
-                    way[count] = new Cell(x, y);
-                }
-            } else if (x1 > x2 && y1 > y2) {
-                // направление хода влево-вверх
-                for (int x = x1 - 1, y = y1 - 1, count = waypoints; x >= x2; x--, y--, count++) {
-                    way[count] = new Cell(x, y);
-                }
+            int moveLength = Math.abs(x1 - x2);
+            Cell[] waypoints = new Cell[moveLength];
+            int horizontal = Integer.compare(x2, x1);
+            int vertical = Integer.compare(y2, y1);
+            for (int index = 0; index != moveLength; index++) {
+                x1 += horizontal;
+                y1 += vertical;
+                waypoints[index] = new Cell(x1, y1);
             }
+            return waypoints;
         }
-
-        for (int index = 0; index < way.length; index++) {
-            if (way[index] == null) {
-                way = Arrays.copyOf(way, index);
-            }
-        }
-
-        return way;
     }
 }

@@ -118,7 +118,7 @@ public class RookTest {
      * @throws ImpossibleMoveException исключение бросается, если ход невозможен.
      */
     @Test
-    public void whenMoveRookWithValidOccupiedWayThenMove() throws OccupiedWayException {
+    public void whenMoveRookWithValidOccupiedWayThenGetException() throws OccupiedWayException {
         Board board = new Board();
         Cell source = new Cell(3, 3);
         Cell dest = new Cell(3, 0);

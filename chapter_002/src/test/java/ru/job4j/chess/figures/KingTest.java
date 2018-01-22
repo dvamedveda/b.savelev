@@ -177,7 +177,7 @@ public class KingTest {
      * @throws OccupiedWayException исключение бросается, если ход невозможен.
      */
     @Test
-    public void whenMoveKingWithValidOccupiedWayThenMove() throws OccupiedWayException {
+    public void whenMoveKingWithValidOccupiedWayThenGetException() throws OccupiedWayException {
         Board board = new Board();
         Cell source = new Cell(3, 3);
         Cell dest = new Cell(4, 4);

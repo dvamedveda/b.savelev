@@ -58,35 +58,28 @@ public class Pawn implements Figure {
      */
     @Override
     public Cell[] wayFromTo(Cell source, Cell dest) throws ImpossibleMoveException {
-
         int x1 = source.getX();
         int y1 = source.getY();
         int x2 = dest.getX();
         int y2 = dest.getY();
-        int waypoints = 0;
-        Cell[] way = new Cell[8];
-
          /*
-        Проверка, может ли фигура ходить так:
-        вверх на одну клетку, или на две, если стартовая клетка - вторая снизу, в пределах доски
+        Проверка, может ли фигура ходить так и просчитываем пройденные клетки.
+        Иначе бросаем исключение.
          */
         if (!((x1 == x2 && y1 > y2 && (y2 == y1 - 2 && y1 == 6)) || (x1 == x2 && y1 > y2 && (y2 == y1 - 1)))
                 || (x2 < 0 || y2 < 0)) {
             throw new ImpossibleMoveException();
-        } else if ((y2 == y1 - 2 && y1 == 6)) {
-            for (int y = y1 - 1, count = waypoints; y >= y2; y--, count++) {
-                way[count] = new Cell(x1, y);
-            }
         } else {
-            way[waypoints] = new Cell(x1, y1 - 1);
-        }
-
-        for (int index = 0; index < way.length; index++) {
-            if (way[index] == null) {
-                way = Arrays.copyOf(way, index);
+            int moveLength = (Math.abs(y1 - y2) == 2 && y1 == 6) ? 2 : 1;
+            Cell[] waypoints = new Cell[moveLength];
+            int horizontal = Integer.compare(x2, x1);
+            int vertical = Integer.compare(y2, y1);
+            for (int index = 0; index != moveLength; index++) {
+                x1 += horizontal;
+                y1 += vertical;
+                waypoints[index] = new Cell(x1, y1);
             }
+            return waypoints;
         }
-
-        return way;
     }
 }

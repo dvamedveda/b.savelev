@@ -191,11 +191,10 @@ public class KnightTest {
         board.setCurrentFigure(new Bishop(occupiedSecondSource));
         board.move(occupiedSecondSource, occupiedSecondDest);
         board.setCurrentFigure(new Knight(source));
-        try {
-            board.move(source, dest);
-        } catch (OccupiedWayException ex) {
-            Assert.assertNotEquals("", ex.getMessage());
-        }
+        board.move(source, dest);
+        Figure expected = new Knight(dest);
+        Figure result = board.getFields()[dest.getX()][dest.getY()];
+        Assert.assertTrue(expected.equals(result));
     }
 
     /**

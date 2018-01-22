@@ -118,7 +118,7 @@ public class BishopTest {
      * @throws OccupiedWayException исключение бросается, если ход невозможен.
      */
     @Test
-    public void whenMoveBishopWithValidOccupiedWayThenMove() throws OccupiedWayException {
+    public void whenMoveBishopWithValidOccupiedWayThenGetException() throws OccupiedWayException {
         Board board = new Board();
         Cell source = new Cell(3, 4);
         Cell dest = new Cell(6, 7);
