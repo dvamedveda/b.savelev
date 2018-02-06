@@ -53,4 +53,19 @@ public class ArrayConvert {
         }
         return result;
     }
+
+    /**
+     * Метод конвертирует список массивов со значениями в список.
+     * @param list список массивов со значениями.
+     * @return список со значениями из всех массивов
+     */
+    public List<Integer> convert(List<int[]> list) {
+        List<Integer> result = new ArrayList<>();
+        for (int[] array : list) {
+            for (Integer value : array) {
+                result.add(value);
+            }
+        }
+        return result;
+    }
 }

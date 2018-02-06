@@ -77,4 +77,22 @@ public class ArrayConvertTest {
         int[][] result = ac.toArray(ourList, 4);
         Assert.assertThat(result, is(expected));
     }
+
+    /**
+     * Тест проверяющий конвертацию списка массивов значений в список значений.
+     */
+    @Test
+    public void whenListOfArraysConvertsToListThenSuccess() {
+        List<int[]> listOfArrays = new ArrayList<>();
+        listOfArrays.add(new int[]{1, 2, 3, 4, 5});
+        listOfArrays.add(new int[]{6});
+        listOfArrays.add(new int[]{7, 8, 9});
+        ArrayConvert ac = new ArrayConvert();
+        List<Integer> expected = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            expected.add(i);
+        }
+        List<Integer> result = ac.convert(listOfArrays);
+        Assert.assertThat(result, is(expected));
+    }
 }
