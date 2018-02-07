@@ -56,32 +56,4 @@ public class CofeMachineTest {
         int[] expected = {10, 10, 10, 5, 2, 1};
         assertThat(result, is(expected));
     }
-
-    /**
-     * Проверяется случай, когда на купюру 10 рублей покупаем кофе за 50 рублей.
-     * Не должно выдавать монет.
-     */
-    @Test
-    public void whenBuyCofeForFiftyAndGiveTenThenGetTenBack() {
-        CofeMachine machine = new CofeMachine();
-        int price = 50;
-        int value = 10;
-        int[] result = machine.changes(value, price);
-        int[] expected = {10};
-        assertThat(result, is(expected));
-    }
-
-    /**
-     * Проверяется случай, когда на купюру 10 рублей покупаем кофе за 50 рублей.
-     * Не должно выдавать монет.
-     */
-    @Test
-    public void whenBuyCofeForFiftyAndGiveFiftyThenGetNothing() {
-        CofeMachine machine = new CofeMachine();
-        int price = 50;
-        int value = 50;
-        int[] result = machine.changes(value, price);
-        int[] expected = {-1};
-        assertThat(result, is(expected));
-    }
 }

@@ -11,6 +11,8 @@ import java.util.Arrays;
  */
 public class CofeMachine {
 
+    final static int[] COINS = {10, 5, 2, 1};
+
     /**
      * Метод выдает сдачу монетами номиналом в 10, 5, 2, 1 рублей.
      * Если номинал купюры меньше суммы покупки - возвращает ту же купюру.
@@ -22,28 +24,16 @@ public class CofeMachine {
      */
     public int[] changes(int value, int price) {
         int[] result;
-        if (price > value) {
-            result = new int[]{value};
-        } else if (price == value) {
-            result = new int[]{-1};
-        } else {
-            result = new int[value - price];
-            int[] coins = {10, 5, 2, 1};
-            int change = value - price;
-            int changeIndex = 0;
-            for (int par = 0; par < coins.length; par++) {
-                while (change >= coins[par]) {
-                    result[changeIndex] = coins[par];
-                    change -= coins[par];
-                    changeIndex++;
-                }
-            }
-            for (int index = 0; index < result.length; index++) {
-                if (result[index] == 0) {
-                    result = Arrays.copyOf(result, index);
-                }
+        result = new int[value - price];
+        int change = value - price;
+        int changeIndex = 0;
+        for (int par = 0; par < COINS.length; par++) {
+            while (change >= COINS[par]) {
+                result[changeIndex] = COINS[par];
+                change -= COINS[par];
+                changeIndex++;
             }
         }
-        return result;
+        return Arrays.copyOf(result, changeIndex);
     }
 }
