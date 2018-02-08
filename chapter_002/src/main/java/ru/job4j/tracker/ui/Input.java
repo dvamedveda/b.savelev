@@ -1,5 +1,7 @@
 package ru.job4j.tracker.ui;
 
+import java.util.ArrayList;
+
 /**
  * Интерфейс, описывающий свойство объектов для ввода.
  */
@@ -18,5 +20,5 @@ public interface Input {
      * @param range диапазон допустимых значений.
      * @return ответ пользователя, содержащий одно из допустимых значений.
      */
-    int ask(String question, int[] range);
+    int ask(String question, ArrayList<Integer> range);
 }

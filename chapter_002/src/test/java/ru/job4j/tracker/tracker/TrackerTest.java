@@ -2,9 +2,10 @@ package ru.job4j.tracker.tracker;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 
 /**
  * Тесты для класса Tracker.
@@ -24,7 +25,7 @@ public class TrackerTest {
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
         tracker.add(item);
 
-        assertThat(tracker.findAll()[0], is(item));
+        assertThat(tracker.findAll().get(0), is(item));
     }
 
     /**
@@ -35,7 +36,7 @@ public class TrackerTest {
         Tracker tracker = new Tracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
         tracker.add(item);
-        Item updatedItem = tracker.findAll()[0];
+        Item updatedItem = tracker.findAll().get(0);
         Item newItem = new Item("Измененная тестовая заявка", "Измененное тестовое описание заявки", 54321L);
         newItem.setId(updatedItem.getId());
         tracker.update(newItem);
@@ -54,7 +55,7 @@ public class TrackerTest {
         Tracker tracker = new Tracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
         tracker.add(item);
-        Item deletingItem = tracker.findAll()[0];
+        Item deletingItem = tracker.findAll().get(0);
         String deletingSymmary = deletingItem.getSummary();
         tracker.delete(deletingItem);
         assertNull(tracker.findByName(deletingSymmary));
@@ -65,17 +66,20 @@ public class TrackerTest {
      */
     @Test
     public void whenExistOneMoreItemsThenFindAll() {
+        ArrayList<Item> expected = new ArrayList<>();
         Item itemOne = new Item("Тестовая заявка 1", "Тестовое описание заявки 1", 12345L);
         Item itemTwo = new Item("Тестовая заявка 2", "Тестовое описание заявки 2", 23456L);
         Item itemThree = new Item("Тестовая заявка 3", "Тестовое описание заявки 3", 34567L);
-        Item[] expected = {itemOne, itemTwo, itemThree};
+        expected.add(itemOne);
+        expected.add(itemTwo);
+        expected.add(itemThree);
 
         Tracker tracker = new Tracker();
         tracker.add(itemOne);
         tracker.add(itemTwo);
         tracker.add(itemThree);
 
-        assertThat(tracker.findAll(), arrayContainingInAnyOrder(expected));
+        assertThat(tracker.findAll(), is(expected));
     }
 
     /**
@@ -89,7 +93,9 @@ public class TrackerTest {
         tracker.add(itemOne);
         tracker.add(itemTwo);
         String sameSummary = "Тестовая заявка";
-        Item[] expected = {itemOne, itemTwo};
+        ArrayList<Item> expected = new ArrayList<>();
+        expected.add(itemOne);
+        expected.add(itemTwo);
         assertThat(expected, is(tracker.findByName(sameSummary)));
     }
 
@@ -104,7 +110,8 @@ public class TrackerTest {
         tracker.add(itemOne);
         tracker.add(itemTwo);
         String summary = "Первая тестовая заявка";
-        Item[] expected = {itemOne};
+        ArrayList<Item> expected = new ArrayList<>();
+        expected.add(itemOne);
         assertThat(expected, is(tracker.findByName(summary)));
     }
 
@@ -127,7 +134,7 @@ public class TrackerTest {
         Tracker tracker = new Tracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
         tracker.add(item);
-        String id = tracker.findAll()[0].getId();
+        String id = tracker.findAll().get(0).getId();
         assertThat(id, is(tracker.findById(id).getId()));
     }
 

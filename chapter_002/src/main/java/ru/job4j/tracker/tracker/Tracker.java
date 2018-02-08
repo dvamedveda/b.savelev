@@ -1,7 +1,6 @@
 package ru.job4j.tracker.tracker;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Класс, описывающий трекер и его методы для работы с заявками.
@@ -12,15 +11,9 @@ import java.util.Random;
  */
 public class Tracker {
     /**
-     * Массив заявок
+     * Список заявок
      */
-    private final Item[] items = new Item[100];
-
-    /**
-     * Первый свободный слот в масииве заявок.
-     * Используется для определения, куда в массиве заявок сохранять заявку.
-     */
-    private int position = 0;
+    private final ArrayList<Item> items = new ArrayList<>();
 
     /**
      * Специальный метод, генерирующий уникальный ID для завки.
@@ -36,15 +29,14 @@ public class Tracker {
     }
 
     /**
-     * Добавление заявки в массив всех существующих заявок.
+     * Добавление заявки в список всех существующих заявок.
      *
-     * @param item новая заявка, которой нужно присвоить уникальный идентификатор и сохранить в массиве заявок.
+     * @param item новая заявка, которой нужно присвоить уникальный идентификатор и сохранить в списке заявок.
      * @return добавленная в трекер заявка.
      */
     public Item add(Item item) {
         item.setId(this.generateId());
-        this.items[this.position] = item;
-        this.position++;
+        this.items.add(item);
         return item;
     }
 
@@ -70,9 +62,12 @@ public class Tracker {
      * @param item заявка, которую требуется удалить.
      */
     public void delete(Item item) {
-        for (int deletingIndex = 0; deletingIndex < this.items.length; deletingIndex++) {
-            if (this.items[deletingIndex] != null && this.items[deletingIndex].getId().equals(item.getId())) {
-                this.items[deletingIndex] = null;
+        Item nextItem;
+        Iterator<Item> iter = this.items.iterator();
+        while (iter.hasNext()) {
+            nextItem = iter.next();
+            if (nextItem.getId().equals(item.getId())) {
+                iter.remove();
             }
         }
     }
@@ -82,36 +77,26 @@ public class Tracker {
      *
      * @return список заявок
      */
-    public Item[] findAll() {
-        Item[] notEmptyArray = new Item[this.items.length];
-        int resultCount = 0;
-        for (Item nextItem : this.items) {
-            if (nextItem != null) {
-                notEmptyArray[resultCount] = nextItem;
-                resultCount++;
-            }
-        }
-        return Arrays.copyOf(notEmptyArray, resultCount);
+    public ArrayList<Item> findAll() {
+        return this.items;
 
     }
 
     /**
      * Поиск заявок по имени.
-     * Так как имя заявки - неуникально, заявок может быть несколько, поэтому возвращается массив.
+     * Так как имя заявки - неуникально, заявок может быть несколько, поэтому возвращается список совпадающих заявок.
      *
      * @param name имя, по которому нужно отыскать заявку.
-     * @return массив заявок с подходящим именем.
+     * @return список заявок с подходящим именем.
      */
-    public Item[] findByName(String name) {
-        Item[] matches = new Item[this.items.length];
-        int resultCount = 0;
+    public ArrayList<Item> findByName(String name) {
+        ArrayList<Item> result = new ArrayList<>();
         for (Item nextItem : this.items) {
-            if (nextItem != null && nextItem.getSummary().equals(name)) {
-                matches[resultCount] = nextItem;
-                resultCount++;
+            if (nextItem.getSummary().equals(name)) {
+                result.add(nextItem);
             }
         }
-        return resultCount > 0 ? Arrays.copyOf(matches, resultCount) : null;
+        return result.size() > 0 ? result : null;
     }
 
     /**
@@ -123,11 +108,10 @@ public class Tracker {
     public Item findById(String id) {
         Item result = null;
         for (Item item : this.items) {
-            if (item != null && item.getId().equals(id)) {
+            if (item.getId().equals(id)) {
                 result = item;
             }
         }
-
         return result;
     }
 }

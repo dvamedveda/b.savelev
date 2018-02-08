@@ -1,5 +1,7 @@
 package ru.job4j.tracker.ui;
 
+import java.util.ArrayList;
+
 /**
  * Класс, содержащий методы для тестирования с имитацией пользовательского ввода.
  */
@@ -45,7 +47,7 @@ public class StubInput implements Input {
      * @return один из существующих пунктов меню.
      */
     @Override
-    public int ask(String question, int[] range) {
+    public int ask(String question, ArrayList<Integer> range) {
         boolean contains = false;
         int result;
         int key = Integer.parseInt(this.ask(question));

@@ -1,5 +1,6 @@
 package ru.job4j.tracker.ui;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -27,7 +28,7 @@ public class ConsoleInput implements Input {
      * @return одно из допустимых значений пунктов меню.
      */
     @Override
-    public int ask(String question, int[] range) {
+    public int ask(String question, ArrayList<Integer> range) {
         boolean contains = false;
         int result;
         int key = Integer.parseInt(this.ask(question));

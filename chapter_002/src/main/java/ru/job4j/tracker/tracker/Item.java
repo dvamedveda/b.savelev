@@ -1,5 +1,8 @@
 package ru.job4j.tracker.tracker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Класс, описывающий заявку для трекера.
  *
@@ -29,7 +32,7 @@ public class Item {
     /**
      * Комментарии к заявке.
      */
-    private String[] comments = new String[100];
+    private List<String> comments = new ArrayList<>();
 
     /**
      * Время создания заявки.

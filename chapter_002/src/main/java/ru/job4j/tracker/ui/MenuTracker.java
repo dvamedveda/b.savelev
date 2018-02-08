@@ -3,6 +3,8 @@ package ru.job4j.tracker.ui;
 import ru.job4j.tracker.tracker.Item;
 import ru.job4j.tracker.tracker.Tracker;
 
+import java.util.ArrayList;
+
 /**
  * "Внешний" внутренний класс.
  * Описывает действие программы в случае выбора пункта меню "Выход из программы"
@@ -30,7 +32,7 @@ public class MenuTracker {
 
     private Input input;
     private Tracker tracker;
-    private UserAction[] actions = new UserAction[7];
+    private ArrayList<UserAction> actions = new ArrayList<>();
 
     /**
      * Конструктор класса меню.
@@ -43,32 +45,36 @@ public class MenuTracker {
     }
 
     /**
-     * Геттер для получения диапазона допустимых для ыбора пользователем пунктов меню.
+     * Геттер для получения диапазона допустимых для выбора пользователем пунктов меню.
      * @return диапазон допустимых пунктов меню.
      */
-    public int[] getOptions() {
-        int[] result = new int[this.actions.length];
-        for (int index = 0; index < this.actions.length; index++) {
-            result[index] = this.actions[index].key();
+    public ArrayList<Integer> getOptions() {
+        ArrayList<Integer> result = new ArrayList<>();
+        for (UserAction ua : this.actions) {
+            result.add(ua.key());
         }
         return result;
     }
 
     /**
-     * Наполнение массива действий доступными действиями.
+     * Наполнение списка действий доступными действиями.
      */
     public void fillActions() {
-        this.actions[0] = new Exit(0, "Выход из программы.");
-        this.actions[1] = this.new AddItem(1, "Создание новой заявки.");
-        this.actions[2] = this.new UpdateItem(2, "Обновление существующей заявки.");
-        this.actions[3] = this.new DeleteItem(3, "Удаление заявки по ее ID.");
-        this.actions[4] = this.new FindAllItems(4, "Поиск всех заявок.");
-        this.actions[5] = this.new FindByName(5, "Поиск заявки по названию.");
-        this.actions[6] = this.new FindById(6, "Поиск заявки по ID.");
+        this.actions.add(new Exit(0, "Выход из программы."));
+        this.actions.add(this.new AddItem(1, "Создание новой заявки."));
+        this.actions.add(this.new UpdateItem(2, "Обновление существующей заявки."));
+        this.actions.add(this.new DeleteItem(3, "Удаление заявки по ее ID."));
+        this.actions.add(this.new FindAllItems(4, "Поиск всех заявок."));
+        this.actions.add(this.new FindByName(5, "Поиск заявки по названию."));
+        this.actions.add(this.new FindById(6, "Поиск заявки по ID."));
     }
 
     public void select(int key) {
-        this.actions[key].execute(this.input, this.tracker);
+        for (UserAction action : this.actions) {
+            if (action.key() == key) {
+                action.execute(this.input, this.tracker);
+            }
+        }
     }
 
     /**
@@ -79,9 +85,7 @@ public class MenuTracker {
         System.out.println("+++++++++++++++++++++++++++++++++");
         System.out.println("Меню программы :");
         for (UserAction action : this.actions) {
-            if (action != null) {
-                System.out.println(action.info());
-            }
+            System.out.println(action.info());
         }
         System.out.println("+++++++++++++++++++++++++++++++++");
         System.out.println();
@@ -167,8 +171,8 @@ public class MenuTracker {
 
         public void execute(Input input, Tracker tracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
-            if (tracker.findAll().length > 0) {
-                Item[] allItems = tracker.findAll();
+            if (tracker.findAll().size() > 0) {
+                ArrayList<Item> allItems = tracker.findAll();
                 System.out.println("Найдены следующие заявки : ");
                 for (Item nextFoundItem : allItems) {
                     PrettyPrint.printItem(nextFoundItem);
@@ -192,7 +196,7 @@ public class MenuTracker {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String itemName = input.ask("Введите название заявки : ");
             if (tracker.findByName(itemName) != null) {
-                Item[] foundedItems = tracker.findByName(itemName);
+                ArrayList<Item> foundedItems = tracker.findByName(itemName);
                 System.out.println("Найдены следующие заявки : ");
                 for (Item nextFoundItem : foundedItems) {
                     PrettyPrint.printItem(nextFoundItem);

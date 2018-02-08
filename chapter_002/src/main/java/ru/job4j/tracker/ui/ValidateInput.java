@@ -1,5 +1,7 @@
 package ru.job4j.tracker.ui;
 
+import java.util.ArrayList;
+
 /**
  * Класс, содержащий реализацию пользовательского ввода, с обработкой исключительных ситуаций.
  */
@@ -36,7 +38,7 @@ public class ValidateInput extends ConsoleInput {
      * @return одно из допустимых значений пунктов меню.
      */
     @Override
-    public int ask(String question, int[] range) {
+    public int ask(String question, ArrayList<Integer> range) {
         boolean invalid = true;
         int result = -1;
         do {
