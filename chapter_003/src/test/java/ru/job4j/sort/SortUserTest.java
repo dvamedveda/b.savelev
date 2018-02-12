@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 import static org.hamcrest.core.Is.is;
@@ -62,6 +63,112 @@ public class SortUserTest {
         expected.add(one);
         SortUser sortUser = new SortUser();
         TreeSet<User> result = sortUser.sort(users);
+        Assert.assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест проверяет сортировку списка по длине имени(по возрастанию).
+     */
+    @Test
+    public void whenSortListByNameLengthThenGetListSortedByNameLength() {
+        ArrayList<User> users = new ArrayList<>();
+        User one = new User("Vasiliy", 45);
+        User two = new User("Boris", 29);
+        User three = new User("Ira", 32);
+        User four = new User("Ivan", 29);
+        users.add(one);
+        users.add(two);
+        users.add(three);
+        users.add(four);
+        List<User> expected = new ArrayList<>();
+        expected.add(three);
+        expected.add(four);
+        expected.add(two);
+        expected.add(one);
+        SortUser sortUser = new SortUser();
+        List<User> result = sortUser.sortNameLength(users);
+        Assert.assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест проверяет сортировку списка по длине имени(по возрастанию) в случае, если есть именя одинаковой длины.
+     */
+    @Test
+    public void whenSortListByNameLengthWithDupsThenGetListSortedByNameLength() {
+        ArrayList<User> users = new ArrayList<>();
+        User one = new User("Vasiliy", 45);
+        User two = new User("Boris", 29);
+        User three = new User("Ira", 32);
+        User four = new User("Ivan", 29);
+        User five = new User("Nikolay", 45);
+        users.add(one);
+        users.add(two);
+        users.add(three);
+        users.add(four);
+        users.add(five);
+        List<User> expected = new ArrayList<>();
+        expected.add(three);
+        expected.add(four);
+        expected.add(two);
+        expected.add(one);
+        expected.add(five);
+        SortUser sortUser = new SortUser();
+        List<User> result = sortUser.sortNameLength(users);
+        Assert.assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест проверяет сортировку списка юзеров по именам лексикографически, в случае, если одинаковых имен нет.
+     */
+    @Test
+    public void whenSortListByAllFieldsWithoutDupNamesThenGetListSortedByNames() {
+        ArrayList<User> users = new ArrayList<>();
+        User one = new User("Vasiliy", 45);
+        User two = new User("Boris", 29);
+        User three = new User("Ira", 32);
+        User four = new User("Ivan", 29);
+        User five = new User("Nikolay", 45);
+        users.add(one);
+        users.add(two);
+        users.add(three);
+        users.add(four);
+        users.add(five);
+        List<User> expected = new ArrayList<>();
+        expected.add(two);
+        expected.add(three);
+        expected.add(four);
+        expected.add(five);
+        expected.add(one);
+        SortUser sortUser = new SortUser();
+        List<User> result = sortUser.sortByAllFields(users);
+        Assert.assertThat(result, is(expected));
+    }
+
+    /**
+     * Тест проверяет сортировку списка юзеров по именам лексикографически.
+     * Если в списке есть одинаковые имена, то дополнительно список сортируется по возрасту.
+     */
+    @Test
+    public void whenSortListByAllFieldsWithDupNamesThenGetListSortedByAllFields() {
+        ArrayList<User> users = new ArrayList<>();
+        User one = new User("Ivan", 45);
+        User two = new User("Boris", 29);
+        User three = new User("Ivan", 29);
+        User four = new User("Boris", 45);
+        User five = new User("Ira", 64);
+        users.add(one);
+        users.add(two);
+        users.add(three);
+        users.add(four);
+        users.add(five);
+        List<User> expected = new ArrayList<>();
+        expected.add(two);
+        expected.add(four);
+        expected.add(five);
+        expected.add(three);
+        expected.add(one);
+        SortUser sortUser = new SortUser();
+        List<User> result = sortUser.sortByAllFields(users);
         Assert.assertThat(result, is(expected));
     }
 }

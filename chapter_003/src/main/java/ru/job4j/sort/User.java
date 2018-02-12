@@ -15,6 +15,25 @@ public class User implements Comparable<User> {
     private int age;
 
     /**
+     * Геттер.
+     * @return возраст юзера.
+
+     */
+    public int getAge() {
+        return age;
+    }
+
+    /**
+     * Геттер.
+     * @return имя юзера.
+
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+
      * Конструктор
      *
      * @param name имя.
