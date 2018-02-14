@@ -25,9 +25,9 @@ public class ListCompare implements Comparator<List<Integer>> {
         int result = 0;
         for (int leftIndex = 0, rightIndex = 0; (leftIndex < left.size() && rightIndex < right.size()); leftIndex++, rightIndex++) {
             result = Integer.compare(left.get(leftIndex), right.get(rightIndex));
-            if (result != 0)
+            if (result != 0) {
                 break;
-            else if (leftIndex == left.size() - 1 && rightIndex < right.size() - 1) {
+            } else if (leftIndex == left.size() - 1 && rightIndex < right.size() - 1) {
                 result = -1;
                 break;
             } else if (leftIndex < left.size() - 1 && rightIndex == right.size() - 1) {
