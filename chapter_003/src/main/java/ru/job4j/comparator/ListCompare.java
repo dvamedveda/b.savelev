@@ -23,16 +23,17 @@ public class ListCompare implements Comparator<List<Integer>> {
     @Override
     public int compare(List<Integer> left, List<Integer> right) {
         int result = 0;
-        if (left.size() == right.size()) {
-            for (int index = 0; index < left.size(); index++) {
-                int pair = Integer.compare(left.get(index), right.get(index));
-                if (pair != 0) {
-                    result = pair;
-                    break;
-                }
+        for (int leftIndex = 0, rightIndex = 0; (leftIndex < left.size() && rightIndex < right.size()); leftIndex++, rightIndex++) {
+            result = Integer.compare(left.get(leftIndex), right.get(rightIndex));
+            if (result != 0)
+                break;
+            else if (leftIndex == left.size() - 1 && rightIndex < right.size() - 1) {
+                result = -1;
+                break;
+            } else if (leftIndex < left.size() - 1 && rightIndex == right.size() - 1) {
+                result = 1;
+                break;
             }
-        } else {
-            result = Integer.compare(left.size(), right.size());
         }
         return result;
     }
