@@ -23,7 +23,8 @@ public class ListCompare implements Comparator<List<Integer>> {
     @Override
     public int compare(List<Integer> left, List<Integer> right) {
         int result = 0;
-        for (int leftIndex = 0, rightIndex = 0; (leftIndex < left.size() && rightIndex < right.size()); leftIndex++, rightIndex++) {
+        int leftIndex = 0, rightIndex = 0;
+        while (leftIndex < left.size() && rightIndex < right.size()) {
             result = Integer.compare(left.get(leftIndex), right.get(rightIndex));
             if (result != 0) {
                 break;
@@ -34,6 +35,8 @@ public class ListCompare implements Comparator<List<Integer>> {
                 result = 1;
                 break;
             }
+            leftIndex++;
+            rightIndex++;
         }
         return result;
     }
