@@ -39,6 +39,10 @@ public class Account {
         return value;
     }
 
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     /**
      * Получение номера счета.
      *

@@ -89,7 +89,7 @@ public class BankTest {
     }
 
     /**
-     * Проверяется перечисление денег со счета на счет, когда денег для перечисления достаточно.
+     * Проверяется успешность перечисления денег со счета на счет, когда денег для перечисления достаточно.
      */
     @Test
     public void whenTransferEnoughMoneyThenTransfers() {
@@ -108,7 +108,7 @@ public class BankTest {
     }
 
     /**
-     * Проверяется перечисление денег со счета на счет, когда денег для перечисления недостаточно.
+     * Проверяется успешность перечисления денег со счета на счет, когда денег для перечисления недостаточно.
      */
     @Test
     public void whenTransferNotEnoughMoneyThenTransfers() {
@@ -127,7 +127,7 @@ public class BankTest {
     }
 
     /**
-     * Проверяется перечисление денег со счета на счет, когда счеь получателя некорректен.
+     * Проверяется успешность перечисления денег со счета на счет, когда счеь получателя некорректен.
      */
     @Test
     public void whenTransferMoneyToUnexistAccountThenTransferFails() {
@@ -146,7 +146,7 @@ public class BankTest {
     }
 
     /**
-     * Проверяется перечисление денег со счета на счет, когда счет источника некорректен.
+     * Проверяется успешность перечисления денег со счета на счет, когда счет источника некорректен.
      */
     @Test
     public void whenTransferMoneyFromUnexistAccountThenTransferFails() {
@@ -162,5 +162,53 @@ public class BankTest {
         boolean result = bank.transferMoney("Vasiliy Pupkin", "1234509876",
                 "Petr Petrov", "9876543210", 6.5);
         Assert.assertThat(result, is(false));
+    }
+
+    /**
+     * Проверяется фактический перевод денег со счета на счет, когда денег достаточно.
+     */
+    @Test
+    public void whenTransferMoneyAndMoneyEnoughThenTransferSuccess() {
+        Bank bank = new Bank();
+        User vasya = new User("Vasya", "Vasiliy Pupkin");
+        User petya = new User("Petya", "Petr Petrov");
+        bank.addUser(vasya);
+        bank.addUser(petya);
+        Account accountOne = new Account("0123456789", 10.0);
+        Account accountTwo = new Account("9876543210", 0.0);
+        bank.addAccountToUser("Vasiliy Pupkin", accountOne);
+        bank.addAccountToUser("Petr Petrov", accountTwo);
+        bank.transferMoney("Vasiliy Pupkin", "0123456789",
+                "Petr Petrov", "9876543210", 6.5);
+        double resultSource = accountOne.getValue();
+        double expectedSource = 3.5;
+        Assert.assertThat(resultSource, is(expectedSource));
+        double resultDestination = accountTwo.getValue();
+        double expectedDestination = 6.5;
+        Assert.assertThat(resultDestination, is(expectedDestination));
+    }
+
+    /**
+     * Проверяется фактический перевод денег со счета на счет, когда денег недостаточно.
+     */
+    @Test
+    public void whenTransferMoneyAndMoneyNotEnoughThenTransferFails() {
+        Bank bank = new Bank();
+        User vasya = new User("Vasya", "Vasiliy Pupkin");
+        User petya = new User("Petya", "Petr Petrov");
+        bank.addUser(vasya);
+        bank.addUser(petya);
+        Account accountOne = new Account("0123456789", 10.0);
+        Account accountTwo = new Account("9876543210", 0.0);
+        bank.addAccountToUser("Vasiliy Pupkin", accountOne);
+        bank.addAccountToUser("Petr Petrov", accountTwo);
+        bank.transferMoney("Vasiliy Pupkin", "0123456789",
+                "Petr Petrov", "9876543210", 11.0);
+        double resultSource = accountOne.getValue();
+        double expectedSource = 10.0;
+        Assert.assertThat(resultSource, is(expectedSource));
+        double resultDestination = accountTwo.getValue();
+        double expectedDestination = 0.0;
+        Assert.assertThat(resultDestination, is(expectedDestination));
     }
 }

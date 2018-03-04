@@ -25,7 +25,7 @@ public class Bank {
      * @param user объект клиента.
      */
     public void addUser(User user) {
-        this.accounts.put(user, new LinkedList<Account>());
+        this.accounts.putIfAbsent(user, new LinkedList<Account>());
     }
 
     /**
@@ -44,11 +44,9 @@ public class Bank {
      * @param account  объект счета для добавления.
      */
     public void addAccountToUser(String passport, Account account) {
-        for (User user : this.accounts.keySet()) {
-            if (user.getPassport().equals(passport)) {
-                this.accounts.get(user).add(account);
-            }
-        }
+         if (!this.accounts.get(findUserByPassport(passport)).contains(account)) {
+             this.accounts.get(findUserByPassport(passport)).add(account);
+         }
     }
 
     /**
@@ -58,11 +56,7 @@ public class Bank {
      * @param account  объект счета для удаления.
      */
     public void deleteAccountFromUser(String passport, Account account) {
-        for (User user : this.accounts.keySet()) {
-            if (user.getPassport().equals(passport)) {
-                this.accounts.get(user).remove(account);
-            }
-        }
+        this.accounts.get(findUserByPassport(passport)).remove(account);
     }
 
     /**
@@ -72,10 +66,20 @@ public class Bank {
      * @return список счетов клиента.
      */
     public List<Account> getUserAccount(String passport) {
-        List<Account> result = new LinkedList<>();
+        return this.accounts.get(findUserByPassport(passport));
+    }
+
+    /**
+     * Найти пользователя в списке по паспортным данным.
+     * @param passport паспортные данные
+     * @return искомый юзер
+     */
+    private User findUserByPassport(String passport) {
+        User result = null;
         for (User user : this.accounts.keySet()) {
             if (user.getPassport().equals(passport)) {
-                result = this.accounts.get(user);
+                result = user;
+                break;
             }
         }
         return result;
@@ -95,30 +99,32 @@ public class Bank {
                                  String destinationPassport, String destinationRequisite,
                                  double amount) {
         boolean result = false;
-        User srcUser = null;
-        User dstUser = null;
         boolean srcReq = false;
         boolean dstReq = false;
-        for (User user : this.accounts.keySet()) {
-            if (user.getPassport().equals(sourcePassport)) {
-                srcUser = user;
-            }
-            if (user.getPassport().equals(destinationPassport)) {
-                dstUser = user;
-            }
-        }
+        Account srcAccount = null;
+        Account dstAccount = null;
+        User srcUser = findUserByPassport(sourcePassport);
+        User dstUser = findUserByPassport(destinationPassport);
         if (srcUser != null && dstUser != null) {
             for (Account account : this.accounts.get(srcUser)) {
                 if (account.getRequisites().equals(sourceRequisite) && account.getValue() >= amount) {
                     srcReq = true;
+                    srcAccount = account;
+                    break;
                 }
             }
             for (Account account : this.accounts.get(dstUser)) {
                 if (account.getRequisites().equals(destinationRequisite)) {
                     dstReq = true;
+                    dstAccount = account;
+                    break;
                 }
             }
             result = srcReq && dstReq;
+            if (result) {
+                srcAccount.setValue(srcAccount.getValue() - amount);
+                dstAccount.setValue(dstAccount.getValue() + amount);
+            }
         }
         return result;
     }
