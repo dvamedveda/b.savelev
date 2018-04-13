@@ -15,7 +15,7 @@ public class SimpleArray<T> implements Iterable<T> {
     /**
      * Здесь хранится массив с данными
      */
-    private Object[] storeArray = new Object[10];
+    private Object[] store = new Object[10];
 
     /**
      * Добавление элемента в массив.
@@ -26,7 +26,7 @@ public class SimpleArray<T> implements Iterable<T> {
      */
     public void add(T model) {
         int index = this.nextIndex();
-        this.storeArray[index] = (Object) model;
+        this.store[index] = (Object) model;
     }
 
     /**
@@ -36,16 +36,26 @@ public class SimpleArray<T> implements Iterable<T> {
      * @param model объект, который нужно разместить в массиве.
      */
     public void set(int index, T model) {
-        this.storeArray[index] = model;
+        this.store[index] = model;
     }
 
     /**
      * Удалить элемент массива по заданному индексу.
+     * При удалении элемента часть массива справа от индекса перемещается на одну позицию влево.
      *
      * @param index индекс, по которому удаляется элемент.
      */
     public void delete(int index) {
-        this.storeArray[index] = null;
+        Object[] result = new Object[this.store.length];
+        if (index == 0) {
+            System.arraycopy(this.store, 1, result, 0, this.store.length - 1);
+        } else if (index == this.store.length - 1) {
+            System.arraycopy(this.store, 0, result, 0, this.store.length - 1);
+        } else {
+            System.arraycopy(this.store, 0, result, 0, index);
+            System.arraycopy(this.store, index + 1, result, index, this.store.length - index - 1);
+        }
+        this.store = result;
     }
 
     /**
@@ -56,8 +66,8 @@ public class SimpleArray<T> implements Iterable<T> {
      */
     public T get(int index) {
         T result = null;
-        if (this.storeArray[index] != null) {
-            result = (T) this.storeArray[index];
+        if (this.store[index] != null) {
+            result = (T) this.store[index];
         }
         return result;
     }
@@ -68,7 +78,7 @@ public class SimpleArray<T> implements Iterable<T> {
      * @return длина массива.
      */
     public int length() {
-        return this.storeArray.length;
+        return this.store.length;
     }
 
     /**
@@ -79,15 +89,15 @@ public class SimpleArray<T> implements Iterable<T> {
      */
     private int nextIndex() {
         int result = -1;
-        for (int index = 0; index < this.storeArray.length; index++) {
-            if (this.storeArray[index] == null) {
+        for (int index = 0; index < this.store.length; index++) {
+            if (this.store[index] == null) {
                 result = index;
                 break;
             }
-            if (index == this.storeArray.length - 1 && this.storeArray[index] != null) {
-                Object[] temp = this.storeArray;
-                this.storeArray = new Object[this.storeArray.length * 2];
-                System.arraycopy(temp, 0, this.storeArray, 0, temp.length);
+            if (index == this.store.length - 1 && this.store[index] != null) {
+                Object[] temp = this.store;
+                this.store = new Object[this.store.length * 2];
+                System.arraycopy(temp, 0, this.store, 0, temp.length);
                 result = index + 1;
             }
         }
@@ -110,7 +120,7 @@ public class SimpleArray<T> implements Iterable<T> {
     private class SimpleArrayIterator implements Iterator<T> {
 
         private int index = 0;
-        private Object[] simpleArray = storeArray;
+        private Object[] array = store;
 
         /**
          * Есть следующий элемент или нет.
@@ -120,8 +130,8 @@ public class SimpleArray<T> implements Iterable<T> {
         @Override
         public boolean hasNext() {
             boolean result = false;
-            for (int current = index; current < this.simpleArray.length; current++) {
-                if (this.simpleArray[current] != null) {
+            for (int current = index; current < this.array.length; current++) {
+                if (this.array[current] != null) {
                     result = true;
                     break;
                 }
@@ -138,9 +148,9 @@ public class SimpleArray<T> implements Iterable<T> {
         public T next() {
             T result = null;
             if (this.hasNext()) {
-                for (int currentIndex = index; currentIndex < this.simpleArray.length; currentIndex++) {
-                    if (this.simpleArray[currentIndex] != null) {
-                        result = (T) this.simpleArray[currentIndex];
+                for (int currentIndex = index; currentIndex < this.array.length; currentIndex++) {
+                    if (this.array[currentIndex] != null) {
+                        result = (T) this.array[currentIndex];
                         this.index++;
                         break;
                     }

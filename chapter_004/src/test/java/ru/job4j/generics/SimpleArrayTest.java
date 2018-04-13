@@ -96,11 +96,12 @@ public class SimpleArrayTest {
         Assert.assertThat(integers.get(2), is(2));
         Assert.assertThat(integers.get(3), is(3));
         Assert.assertThat(integers.get(4), is(4));
-        Assert.assertNull(integers.get(5));
-        Assert.assertThat(integers.get(6), is(6));
-        Assert.assertNull(integers.get(7));
-        Assert.assertThat(integers.get(8), is(8));
-        Assert.assertThat(integers.get(9), is(9));
+        Assert.assertThat(integers.get(5), is(6));
+        Assert.assertThat(integers.get(6), is(7));
+        Assert.assertThat(integers.get(7), is(9));
+        Assert.assertNull(integers.get(9));
+        Assert.assertNull(integers.get(9));
+
     }
 
     /**
@@ -115,16 +116,16 @@ public class SimpleArrayTest {
         integers.delete(1);
         integers.delete(3);
         Assert.assertThat(integers.get(0), is(0));
-        Assert.assertNull(integers.get(1));
-        Assert.assertThat(integers.get(2), is(2));
+        Assert.assertThat(integers.get(1), is(2));
+        Assert.assertThat(integers.get(2), is(3));
         Assert.assertNull(integers.get(3));
-        Assert.assertThat(integers.get(4), is(4));
+        Assert.assertNull(integers.get(4));
         integers.add(111);
         Assert.assertThat(integers.get(0), is(0));
-        Assert.assertThat(integers.get(1), is(111));
-        Assert.assertThat(integers.get(2), is(2));
-        Assert.assertNull(integers.get(3));
-        Assert.assertThat(integers.get(4), is(4));
+        Assert.assertThat(integers.get(1), is(2));
+        Assert.assertThat(integers.get(2), is(3));
+        Assert.assertThat(integers.get(3), is(111));
+        Assert.assertNull(integers.get(4));
     }
 
     /**
