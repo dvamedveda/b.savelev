@@ -47,15 +47,55 @@ public class LinkedContainer<T> implements Iterable {
         Node<T> l = last;
         if (first == null && last == null) {
             first = newNode;
-            last = newNode;
-            this.size++;
-            this.modCount++;
         } else {
             newNode.prev = l;
             l.next = newNode;
-            last = newNode;
-            this.size++;
-            this.modCount++;
+        }
+        last = newNode;
+        this.size++;
+        this.modCount++;
+    }
+
+    /**
+     * Связывание элементов при удалении.
+     * @param node удаляемая нода
+     */
+    private void unlink(Node<T> node) {
+        Node<T> p = node.prev;
+        Node<T> n = node.next;
+        if (p != null && n != null) {
+            p.next = n;
+            n.prev = p;
+        } else if (p == null && n != null) {
+            n.prev = null;
+            this.first = n;
+        } else if (p != null) {
+            p.next = null;
+            this.last = p;
+        } else {
+            this.first = null;
+            this.last = null;
+        }
+        this.size--;
+        this.modCount++;
+    }
+
+    /**
+     * Удаление ноды из списка по индексу
+     * @param index индекс, по которому происходит удаление из списка.
+     */
+    public void delete(int index) {
+        if (index > 0 || index < this.size) {
+            Node<T> current = first;
+            for (int i = 0; i < this.size; i++) {
+                if (index == i) {
+                    unlink(current);
+                    break;
+                }
+                current = current.next;
+            }
+        } else {
+            throw new IndexOutOfBoundsException();
         }
     }
 

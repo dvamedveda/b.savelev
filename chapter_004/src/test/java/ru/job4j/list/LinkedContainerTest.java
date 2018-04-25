@@ -179,4 +179,85 @@ public class LinkedContainerTest {
         linkedContainer.add(integers);
         Assert.assertThat(linkedContainer.get(0), is(integers));
     }
+
+    /**
+     * Проверяется удаление первого элемента с начала из списка.
+     */
+    @Test
+    public void whenDeleteElementFromLinkedContainerHeadThenDeletingSuccess() {
+        LinkedContainer<Integer> integers = new LinkedContainer<>();
+        integers.add(3);
+        integers.add(2);
+        integers.add(1);
+        Assert.assertThat(integers.length(), is(3));
+        integers.delete(0);
+        Assert.assertThat(integers.get(0), is(2));
+        Assert.assertThat(integers.get(1), is(1));
+        Assert.assertThat(integers.length(), is(2));
+    }
+
+    /**
+     * Проверяется удаление первого элемента с конца из списка.
+     */
+    @Test
+    public void whenDeleteElementFromLinkedContainerTailThenDeletingSuccess() {
+        LinkedContainer<Integer> integers = new LinkedContainer<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        Assert.assertThat(integers.length(), is(3));
+        integers.delete(2);
+        Assert.assertThat(integers.get(0), is(1));
+        Assert.assertThat(integers.get(1), is(2));
+        Assert.assertThat(integers.length(), is(2));
+    }
+
+    /**
+     * Проверяется удаление одного элемента из середины списка.
+     */
+    @Test
+    public void whenDeleteElementFromLinkedContainerThenDeletingSuccess() {
+        LinkedContainer<Integer> integers = new LinkedContainer<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        Assert.assertThat(integers.length(), is(3));
+        integers.delete(1);
+        Assert.assertThat(integers.get(0), is(1));
+        Assert.assertThat(integers.get(1), is(3));
+        Assert.assertThat(integers.length(), is(2));
+    }
+
+    /**
+     * Проверяется удаление единственного элемента из списка.
+     */
+    @Test
+    public void whenDeleteElementFromOneElementLinkedContainerThenDeletingSuccess() {
+        LinkedContainer<Integer> integers = new LinkedContainer<>();
+        integers.add(1);
+        Assert.assertThat(integers.length(), is(1));
+        integers.delete(0);
+        Assert.assertThat(integers.length(), is(0));
+    }
+
+    /**
+     * Проверяется, что при итерации по списку,
+     * который был модифицирован удалением элемента,
+     * и попытке получить следующий элемент,
+     * получаем исключенье ConcurrentModificationException.
+     */
+    @Test(expected = ConcurrentModificationException.class)
+    public void whenItersLinkedContainerAndListModifiedRemoveThenGetConcurrentModificationException() {
+        LinkedContainer<Integer> integers = new LinkedContainer<>();
+        for (int count = 0; count < 5; count++) {
+            integers.add(count);
+        }
+        Iterator<Integer> iterator = integers.iterator();
+        iterator.next();
+        iterator.next();
+        iterator.next();
+        iterator.next();
+        integers.delete(0);
+        iterator.next();
+    }
 }
