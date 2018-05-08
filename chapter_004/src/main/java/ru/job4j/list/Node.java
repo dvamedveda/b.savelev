@@ -46,19 +46,14 @@ public class Node<T> {
     public boolean hasCycle(Node<T> first) {
         boolean result = false;
         Node slow = first, fast = first;
-        while (true) {
+        while (!result) {
             slow = slow.getNext();
-            if (fast.getNext() != null) {
-                fast = fast.getNext().getNext();
-            } else {
-                break;
-            }
+            fast = fast.getNext().getNext();
             if (fast == null) {
                 break;
             }
             if (slow == fast) {
                 result = true;
-                break;
             }
 
         }
