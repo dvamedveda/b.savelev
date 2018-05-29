@@ -1,5 +1,8 @@
 package ru.job4j.set;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * Класс, реализующий множество с использованием хэш таблицы на основе массива.
  *
@@ -7,7 +10,7 @@ package ru.job4j.set;
  * @version - 1.0
  * @since 0.1
  */
-public class SimpleHashSet<T> {
+public class SimpleHashSet<T> implements Iterable<T> {
 
     /**
      * Хранилище объектов.
@@ -124,5 +127,63 @@ public class SimpleHashSet<T> {
         System.arraycopy(temp, 0, this.store, 0, temp.length);
         this.capacity = this.store.length;
         this.threshold = (int) (capacity * loadFactor);
+    }
+
+    /**
+     * Публичный метод для получения итератора по множеству.
+     *
+     * @return новый объект итератора.
+     */
+    @Override
+    public Iterator<T> iterator() {
+        return new SimpleHashSetIterator();
+    }
+
+    /**
+     * Реализуем итератор.
+     */
+    private class SimpleHashSetIterator implements Iterator<T> {
+
+        private Object[] storage = store;
+        private int index = 0;
+
+        /**
+         * Флажок наличия следующего элемента.
+         *
+         * @return есть следующий элемент или нет.
+         */
+        @Override
+        public boolean hasNext() {
+            boolean result = false;
+            for (int current = index; current < this.storage.length; current++) {
+                if (this.storage[current] != null) {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Получение следующего элемента из итератора.
+         *
+         * @return следующий элемент.
+         */
+        @Override
+        public T next() {
+            T result = null;
+            if (this.hasNext()) {
+                for (int pointer = index; pointer < this.storage.length; pointer++) {
+                    this.index++;
+                    if (this.storage[pointer] != null) {
+                        result = (T) this.storage[pointer];
+                        break;
+                    }
+                }
+            } else {
+                throw new NoSuchElementException();
+            }
+            return result;
+        }
     }
 }

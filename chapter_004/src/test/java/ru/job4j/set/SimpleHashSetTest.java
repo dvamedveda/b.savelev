@@ -1,7 +1,12 @@
 package ru.job4j.set;
 
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 
@@ -158,5 +163,73 @@ public class SimpleHashSetTest {
         Assert.assertFalse(numbers.remove(2));
         Assert.assertTrue(numbers.contains(1));
         Assert.assertTrue(numbers.size() == 1);
+    }
+
+    /**
+     * Проверка, что запрос флага hasNext не влияет на итератор.
+     */
+    @Test
+    public void whenCheckHasNextThenCursorNotIters() {
+        SimpleHashSet<Integer> numbers = new SimpleHashSet<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(3);
+        Iterator iterator = numbers.iterator();
+        Assert.assertTrue(iterator.hasNext());
+        Assert.assertTrue(iterator.hasNext());
+        iterator.next();
+        Assert.assertTrue(iterator.hasNext());
+        iterator.next();
+        Assert.assertTrue(iterator.hasNext());
+        iterator.next();
+        Assert.assertFalse(iterator.hasNext());
+    }
+
+    /**
+     * Проверка итерации по множеству.
+     * Проверяется, что итератор в любом порядке
+     * возвратит все добавленные элементы, поскольку это хеш-множество -
+     * элементы хранятся не в порядке их добавления во множество.
+     */
+    @Test
+    public void whenIterateSetThenItersCorrect() {
+        SimpleHashSet<Integer> numbers = new SimpleHashSet<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(3);
+        Iterator<Integer> iterator = numbers.iterator();
+        List<Integer> result = new ArrayList<>();
+        List<Integer> expected = new ArrayList<>();
+        result.add(iterator.next());
+        result.add(iterator.next());
+        result.add(iterator.next());
+        expected.add(1);
+        expected.add(2);
+        expected.add(3);
+        Assert.assertThat(result, IsIterableContainingInAnyOrder.containsInAnyOrder(expected.toArray()));
+        Assert.assertFalse(iterator.hasNext());
+    }
+
+    /**
+     * Проверка разрешения коллизий хеша при добавлении элементов во множество.
+     */
+    @Test
+    public void whenHaveCollisionThenResolvingIt() {
+        SimpleHashSet<Integer> numbers = new SimpleHashSet<>();
+        numbers.add(1);
+        numbers.add(17);
+        numbers.add(17);
+        numbers.add(33);
+        Iterator<Integer> iterator = numbers.iterator();
+        List<Integer> result = new ArrayList<>();
+        List<Integer> expected = new ArrayList<>();
+        result.add(iterator.next());
+        result.add(iterator.next());
+        result.add(iterator.next());
+        expected.add(1);
+        expected.add(17);
+        expected.add(33);
+        Assert.assertThat(result, IsIterableContainingInAnyOrder.containsInAnyOrder(expected.toArray()));
+        Assert.assertFalse(iterator.hasNext());
     }
 }
