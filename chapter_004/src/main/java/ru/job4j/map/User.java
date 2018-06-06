@@ -10,9 +10,9 @@ import java.util.Calendar;
  * @since 0.1
  */
 public class User {
-    private String name;
-    private int children;
-    private Calendar birthday;
+    String name;
+    int children;
+    Calendar birthday;
 
     public User(String name, int children, Calendar birthday) {
         this.name = name;
