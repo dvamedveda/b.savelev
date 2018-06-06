@@ -155,8 +155,9 @@ public class SimpleHashSet<T> implements Iterable<T> {
         @Override
         public boolean hasNext() {
             boolean result = false;
-            for (int current = index; current < this.storage.length; current++) {
-                if (this.storage[current] != null) {
+            for (int pointer = index; pointer < this.storage.length; pointer++) {
+                index = pointer;
+                if (this.storage[pointer] != null) {
                     result = true;
                     break;
                 }
@@ -171,15 +172,10 @@ public class SimpleHashSet<T> implements Iterable<T> {
          */
         @Override
         public T next() {
-            T result = null;
+            T result;
             if (this.hasNext()) {
-                for (int pointer = index; pointer < this.storage.length; pointer++) {
-                    this.index++;
-                    if (this.storage[pointer] != null) {
-                        result = (T) this.storage[pointer];
-                        break;
-                    }
-                }
+                result = (T) this.storage[index];
+                index++;
             } else {
                 throw new NoSuchElementException();
             }
