@@ -119,4 +119,43 @@ public class SimpleTreeTest {
         iterator.next();
         iterator.next();
     }
+
+    /**
+     * Проверка работы метода isBinary в случае, когда дерево - бинарное.
+     */
+    @Test
+    public void whenTreeIsBinaryThenIsBinaryIsTrue() {
+        SimpleTree<Integer> tree = new SimpleTree<>(1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        tree.add(2, 4);
+        tree.add(2, 5);
+        tree.add(3, 6);
+        tree.add(3, 7);
+        Assert.assertTrue(tree.isBinary());
+    }
+
+    /**
+     * Проверка работы метода isBinary в случае, когда дерево - новосозданное.
+     */
+    @Test
+    public void whenTreeIsNewlyCreatedThenIsBinaryIsTrue() {
+        SimpleTree<Integer> tree = new SimpleTree<>(1);
+        Assert.assertTrue(tree.isBinary());
+    }
+
+    /**
+     * Проверка работы метода isBinary в случае, когда дерево - не бинарное.
+     */
+    @Test
+    public void whenTreeIsNotBinaryThenIsBinaryIsFalse() {
+        SimpleTree<Integer> tree = new SimpleTree<>(1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        tree.add(1, 4);
+        tree.add(2, 5);
+        tree.add(3, 6);
+        tree.add(4, 7);
+        Assert.assertFalse(tree.isBinary());
+    }
 }

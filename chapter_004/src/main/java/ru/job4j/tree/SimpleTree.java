@@ -75,6 +75,22 @@ public class SimpleTree<E extends Comparable<E>> implements ElementaryTree {
     }
 
     /**
+     * Определяем, является ли дерево бинарным (у каждого узла не более двух потомков).
+     * @return дерево бинарное или нет
+     */
+    public boolean isBinary() {
+        boolean result = true;
+        Iterator iterator = this.iterator();
+        while (iterator.hasNext()) {
+            Optional<Node<E>> node = this.findBy((E) iterator.next());
+            if (node.isPresent() && node.get().leaves().size() > 2) {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Получение итератора.
      * @return объект итератора.
      */
