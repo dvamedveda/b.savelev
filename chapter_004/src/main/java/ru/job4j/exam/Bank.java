@@ -110,7 +110,9 @@ public class Bank {
 
     /**
      * Метод для вычисления интервала, в котором был пик посетителей банка.
-     * Визиты конвертируем в события, события упорядочиваем, высчитываем интервал, на котором был пик посетителей.
+     * Визиты конвертируем в события, события упорядочиваем, за 1 проход вычисляем максимум посетителей
+     * а затем за второй проход находим и записываем интервалы, в которых был максимум посетителей.
+     * Если интервалов, в которых максимум был одинаковым, несколько - возвращаем их все.
      *
      * @param visits список визитов посетителей.
      * @return список со сводной информацией по пику посетителей.
@@ -128,18 +130,29 @@ public class Bank {
         for (Map.Entry<Long, Boolean> event : events.entrySet()) {
             if (event.getValue()) {
                 count++;
-            }
-            if (count > max) {
-                max = count;
-                start = event.getKey();
-            } else if (count == max) {
-                end = event.getKey();
-            }
-            if (!event.getValue()) {
+                if (count > max) {
+                    max = count;
+                }
+            } else {
                 count--;
             }
         }
-        periods.add(new Info(max, start, end));
+        for (Map.Entry<Long, Boolean> event : events.entrySet()) {
+            if (event.getValue()) {
+                count++;
+                if (count == max) {
+                    start = event.getKey();
+                }
+            } else {
+                if (count == max) {
+                    end = event.getKey();
+                    periods.add(new Info(max, start, end));
+                    start = 0;
+                    end = 0;
+                }
+                count--;
+            }
+        }
         return periods;
     }
 }

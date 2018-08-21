@@ -91,13 +91,32 @@ public class BankTest {
      * для случая, когда было двое посетителей без пересечения визитов.
      */
     @Test
-    public void whenTwoNotCrossThenMaxIsOneOverAllIntervals() {
+    public void whenTwoNotCrossThenMaxIsTwoIntervals() {
         List<Bank.Visit> visits = Arrays.asList(
                 new Bank.Visit(time(8, 10), time(8, 50)),
                 new Bank.Visit(time(9, 30), time(10, 15))
         );
         assertThat(new Bank().max(visits),
-                is(Arrays.asList(new Bank.Info(1, time(8, 10), time(10, 15)))));
+                is(Arrays.asList(
+                        new Bank.Info(1, time(8, 10), time(8, 50)),
+                        new Bank.Info(1, time(9, 30), time(10, 15)))));
+    }
+
+    /**
+     * Тест проверяет интервал и максимум посетителей,
+     * для случая, когда было два пика, с пересечениями визитов, из которых второй пик - максимальный.
+     */
+    @Test
+    public void whenTwoPeaksAndLastIsBigThenLastReturns() {
+        List<Bank.Visit> visits = Arrays.asList(
+                new Bank.Visit(time(8, 10), time(8, 20)),
+                new Bank.Visit(time(8, 15), time(8, 25)),
+                new Bank.Visit(time(9, 10), time(9, 30)),
+                new Bank.Visit(time(9, 20), time(9, 40)),
+                new Bank.Visit(time(9, 25), time(9, 55))
+        );
+        assertThat(new Bank().max(visits),
+                is(Arrays.asList(new Bank.Info(3, time(9, 25), time(9, 30)))));
     }
 
     private long time(int hour, int minute) {
