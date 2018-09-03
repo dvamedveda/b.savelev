@@ -1,5 +1,6 @@
 package ru.job4j.exam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,24 +44,21 @@ public class Info {
      * @param curr текущая коллекция.
      */
     private void getStatistics(List<Store.User> prev, List<Store.User> curr) {
-        for (Store.User currentUser : curr) {
-            if (currentUser.isChanged()) {
+        for (Store.User user : curr) {
+            if (user.isChanged()) {
                 changed++;
             }
-            if (!prev.contains(currentUser)) {
-                added++;
-            }
         }
-        for (Store.User prevUser : prev) {
-            if (!curr.contains(prevUser)) {
-                removed++;
-            }
-        }
+        List<Store.User> temp = new ArrayList<>(prev);
+        temp.removeAll(curr);
+        removed = temp.size();
+        curr.removeAll(prev);
+        added = curr.size();
     }
 
     /**
      * Выводим на печать дифф по двум коллекциям.
-     * @return
+     * @return строка диффа для печати
      */
     @Override
     public String toString() {
