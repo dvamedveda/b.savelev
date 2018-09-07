@@ -14,7 +14,15 @@ import javafx.stage.Stage;
  * @since 0.1
  */
 public class PingPong extends Application {
+    /**
+     * Литерал - заголовок окна.
+     */
     private static final String JOB4J = "Пинг-понг www.job4j.ru";
+
+    /**
+     * Поток для выполнения пинг-понга.
+     */
+    private Thread pingPongThread;
 
     /**
      * Главный поток программы
@@ -27,10 +35,12 @@ public class PingPong extends Application {
         Group group = new Group();
         Rectangle rectangle = new Rectangle(50, 100, 10, 10);
         group.getChildren().add(rectangle);
-        new Thread(new RectangleMove(rectangle)).start();
+        pingPongThread = new Thread(new RectangleMove(rectangle));
+        pingPongThread.start();
         stage.setScene(new Scene(group, limitX, limitY));
         stage.setTitle(JOB4J);
         stage.setResizable(false);
         stage.show();
+        stage.setOnCloseRequest(event -> pingPongThread.interrupt());
     }
 }
