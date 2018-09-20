@@ -19,8 +19,9 @@ public class Store {
 
     /**
      * Метод, возвращающий дифф между двумя коллекциями пользователей.
+     *
      * @param previous некая предыдущая коллекция пользователей.
-     * @param current текущая коллекция пользователей
+     * @param current  текущая коллекция пользователей
      * @return объект диффа между коллекциями.
      */
     public Info diff(List<User> previous, List<User> current) {
@@ -29,6 +30,7 @@ public class Store {
 
     /**
      * Получить список всех пользователей.
+     *
      * @return список пользователей текущего хранилища.
      */
     public List<User> getUsers() {
@@ -37,6 +39,7 @@ public class Store {
 
     /**
      * Метод для добавления пользователя в хранилище.
+     *
      * @param user новый пользователь.
      * @return успешность добавления.
      */
@@ -46,6 +49,7 @@ public class Store {
 
     /**
      * Метод для удаления пользователя из хранилища.
+     *
      * @param user удаляемый пользователь.
      * @return успешность удаления.
      */
@@ -55,6 +59,7 @@ public class Store {
 
     /**
      * Метод для редактирования пользователя, находящегося в хранилище.
+     *
      * @param user редактируемый пользователь.
      * @param name новое имя пользователя.
      */
@@ -84,7 +89,8 @@ public class Store {
 
         /**
          * Конструктор пользователя.
-         * @param id идентификатор.
+         *
+         * @param id   идентификатор.
          * @param name имя.
          */
         public User(int id, String name) {
@@ -93,7 +99,26 @@ public class Store {
         }
 
         /**
+         * Получить идентификатор пользователя.
+         *
+         * @return идентификатор
+         */
+        public int getId() {
+            return this.id;
+        }
+
+        /**
+         * Получить имя пользователя.
+         *
+         * @return имя.
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
          * Узнать, менялся ли пользователь.
+         *
          * @return признак изменения пользователя.
          */
         public boolean isChanged() {

@@ -1,6 +1,6 @@
 package ru.job4j.exam;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +28,7 @@ public class Info {
 
     /**
      * Конструктор объекта, содержащего дифф по коллекциям, диф подсчитывается сразу.
+     *
      * @param prev предыдущая коллекция.
      * @param curr текущая коллекция.
      */
@@ -40,24 +41,37 @@ public class Info {
 
     /**
      * Внутренний метод для подсчета диффа по коллекциям.
-     * @param prev предыдущая коллекциям.
+     *
+     * @param prev предыдущая коллекция.
      * @param curr текущая коллекция.
      */
     private void getStatistics(List<Store.User> prev, List<Store.User> curr) {
-        for (Store.User user : curr) {
-            if (user.isChanged()) {
-                changed++;
+        HashMap<Integer, String> previous = new HashMap<>();
+        HashMap<Integer, String> current = new HashMap<>();
+        for (Store.User cUser : curr) {
+            current.put(cUser.getId(), cUser.getName());
+        }
+        for (Store.User pUser : prev) {
+            previous.put(pUser.getId(), pUser.getName());
+        }
+        for (Store.User pUser : prev) {
+            if (!current.containsKey(pUser.getId())) {
+                removed++;
             }
         }
-        List<Store.User> temp = new ArrayList<>(prev);
-        temp.removeAll(curr);
-        removed = temp.size();
-        curr.removeAll(prev);
-        added = curr.size();
+        for (Store.User cUser : curr) {
+            if (cUser.isChanged()) {
+                changed++;
+            }
+            if (!previous.containsKey(cUser.getId())) {
+                added++;
+            }
+        }
     }
 
     /**
      * Выводим на печать дифф по двум коллекциям.
+     *
      * @return строка диффа для печати
      */
     @Override
