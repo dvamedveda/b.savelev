@@ -27,8 +27,16 @@ public class BrokenThread {
      * В конце работы метод выводит итоговое состояние счетчика на печать, которое должно быть равным 2 000 000.
      */
     private void doCount() {
-        Thread t1 = new Thread(() -> {for (int i = 0; i < 1000000; i++) {incrementCounter();}});
-        Thread t2 = new Thread(() -> {for (int i = 0; i < 1000000; i++) {incrementCounter();}});
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000000; i++) {
+                incrementCounter();
+            }
+        });
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000000; i++) {
+                incrementCounter();
+            }
+        });
         t1.start();
         t2.start();
 
