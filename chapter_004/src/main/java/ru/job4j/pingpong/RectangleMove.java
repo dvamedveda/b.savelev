@@ -29,7 +29,7 @@ public class RectangleMove implements Runnable {
      */
     public void run() {
         boolean right = true;
-        while (true) {
+        while (!Thread.interrupted()) {
             double x = this.rectangle.getX();
             if (right) {
                 this.rectangle.setX(x + 1);
@@ -45,7 +45,7 @@ public class RectangleMove implements Runnable {
             try {
                 Thread.sleep(30);
             } catch (InterruptedException e) {
-                break;
+                e.printStackTrace();
             }
         }
     }

@@ -20,11 +20,6 @@ public class PingPong extends Application {
     private static final String JOB4J = "Пинг-понг www.job4j.ru";
 
     /**
-     * Поток для выполнения пинг-понга.
-     */
-    private Thread pingPongThread;
-
-    /**
      * Главный поток программы
      * @param stage сцена
      */
@@ -35,7 +30,7 @@ public class PingPong extends Application {
         Group group = new Group();
         Rectangle rectangle = new Rectangle(50, 100, 10, 10);
         group.getChildren().add(rectangle);
-        pingPongThread = new Thread(new RectangleMove(rectangle));
+        Thread pingPongThread = new Thread(new RectangleMove(rectangle));
         pingPongThread.start();
         stage.setScene(new Scene(group, limitX, limitY));
         stage.setTitle(JOB4J);
