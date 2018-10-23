@@ -99,12 +99,11 @@ public class UserStorage {
     /**
      * Метод для получения объекта хранилища по его id.
      * Для внутреннего пользования.
-     * Метод не синхронизирован, поскольку не меняет данные в хранилище.
      *
      * @param id идентификатор пользователя.
      * @return объект пользователя.
      */
-    User getById(int id) {
+    synchronized User getById(int id) {
         User searching = null;
         for (User user : users) {
             if (user.getId() == id) {
