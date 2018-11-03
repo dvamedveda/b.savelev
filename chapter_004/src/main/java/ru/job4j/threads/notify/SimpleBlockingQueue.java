@@ -28,7 +28,7 @@ public class SimpleBlockingQueue<T> {
      *
      * @param element объект данных
      */
-    public void put(T element) {
+    public void put(T element) throws InterruptedException {
         synchronized (this) {
             int limit = 2;
             try {
@@ -38,7 +38,7 @@ public class SimpleBlockingQueue<T> {
                 this.queue.offer(element);
                 this.notify();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new InterruptedException();
             }
         }
     }
@@ -48,7 +48,7 @@ public class SimpleBlockingQueue<T> {
      *
      * @return объект данных или null, если очередь пуста.
      */
-    public T poll() {
+    public T poll() throws InterruptedException {
         T result = null;
         synchronized (this) {
             try {
@@ -58,7 +58,7 @@ public class SimpleBlockingQueue<T> {
                 result = this.queue.poll();
                 this.notify();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new InterruptedException();
             }
         }
         return result;

@@ -27,14 +27,22 @@ public class SimpleBlockingQueueTest {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
         Thread producer = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
-                queue.put(i);
-                System.out.println(String.format("Queue put: %d", i));
+                try {
+                    queue.put(i);
+                    System.out.println(String.format("Queue put: %d", i));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         Thread consumer1 = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
-                Assert.assertThat(queue.poll(), is(i));
-                System.out.println(String.format("Queue poll: %d", i));
+                try {
+                    Assert.assertThat(queue.poll(), is(i));
+                    System.out.println(String.format("Queue poll: %d", i));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         producer.start();
