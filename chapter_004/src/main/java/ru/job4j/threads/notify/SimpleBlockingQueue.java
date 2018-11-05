@@ -63,4 +63,12 @@ public class SimpleBlockingQueue<T> {
         }
         return result;
     }
+
+    /**
+     * Определить, является ли очередь пустой.
+     * @return результат проверки.
+     */
+    public synchronized boolean isEmpty() {
+        return this.queue.isEmpty();
+    }
 }

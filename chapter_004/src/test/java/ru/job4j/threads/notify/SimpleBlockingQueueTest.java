@@ -3,6 +3,10 @@ package ru.job4j.threads.notify;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -49,5 +53,45 @@ public class SimpleBlockingQueueTest {
         consumer1.start();
         producer.join();
         consumer1.join();
+    }
+
+    /**
+     * Проверка того, что все данные, отправленные в очередь, из нее получаются.
+     *
+     * @throws InterruptedException в случае, если поток ждал, но был прерван.
+     */
+    @Test
+    public void whenProducerGivesElementsThenComsumerGetsItAll() throws InterruptedException {
+        final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
+        final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
+        Thread producer = new Thread(
+                () -> IntStream.range(0, 5).forEach(
+                        (i) -> {
+                            try {
+                                queue.put(i);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                )
+        );
+        producer.start();
+        Thread consumer = new Thread(
+                () -> {
+                    while (!queue.isEmpty() || !Thread.currentThread().isInterrupted()) {
+                        try {
+                            buffer.add(queue.poll());
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+        );
+        consumer.start();
+        producer.join();
+        consumer.interrupt();
+        consumer.join();
+        Assert.assertThat(buffer, is(Arrays.asList(0, 1, 2, 3, 4)));
     }
 }
