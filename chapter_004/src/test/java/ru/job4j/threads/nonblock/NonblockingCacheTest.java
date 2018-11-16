@@ -119,14 +119,14 @@ public class NonblockingCacheTest {
         AtomicReference<Exception> ex = new AtomicReference<>();
         NonblockingCache cache = new NonblockingCache();
         Thread addingThread = new Thread(() -> {
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2000; i++) {
                 cache.add(new Base(i, Integer.toString(i)));
             }
         });
         addingThread.start();
         addingThread.join();
         Thread firstUpdatingThread = new Thread(() -> {
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2000; i++) {
                 try {
                     cache.update(cache.get(i), Integer.toString(i));
                     Thread.sleep(10);
@@ -139,7 +139,7 @@ public class NonblockingCacheTest {
             }
         });
         Thread secondUpdatingThread = new Thread(() -> {
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2000; i++) {
                 try {
                     cache.update(cache.get(i), Integer.toString(i));
                     Thread.sleep(10);
@@ -152,7 +152,7 @@ public class NonblockingCacheTest {
             }
         });
         Thread thirdUpdatingThread = new Thread(() -> {
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2000; i++) {
                 try {
                     cache.update(cache.get(i), Integer.toString(i));
                     Thread.sleep(10);
