@@ -47,10 +47,8 @@ public class NonblockingCache {
         int version = model.getVersion();
         this.store.computeIfPresent(id, (k, v) -> {
             if (version == model.getVersion()) {
-                System.out.println("Id is " + id + "; Saved version is" + version + "; my version is " + model.getVersion());
                 v.update(name);
             } else {
-                System.out.println("WRONG!! Id is " + id + "; Saved version is" + version + "; my version is " + model.getVersion());
                 throw new OptimisticException("Version changed! Don't update");
             }
             return v;
