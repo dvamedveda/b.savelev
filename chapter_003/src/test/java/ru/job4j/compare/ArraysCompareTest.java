@@ -20,7 +20,7 @@ public class ArraysCompareTest {
     public void compareArrayListAdd() {
         ArraysCompare ac = new ArraysCompare();
         List<String> arrayList = new ArrayList<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         long result = ac.add(arrayList, iterations);
         System.out.println(String.format("ArrayList adding, ms: %s", result));
     }
@@ -32,7 +32,7 @@ public class ArraysCompareTest {
     public void compareLinkedListAdd() {
         ArraysCompare ac = new ArraysCompare();
         List<String> linkedList = new LinkedList<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         long result = ac.add(linkedList, iterations);
         System.out.println(String.format("LinkedList adding, ms: %s", result));
     }
@@ -44,7 +44,7 @@ public class ArraysCompareTest {
     public void compareTreeSetAdd() {
         ArraysCompare ac = new ArraysCompare();
         Set<String> treeSet = new TreeSet<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         long result = ac.add(treeSet, iterations);
         System.out.println(String.format("TreeSet adding, ms: %s", result));
     }
@@ -56,7 +56,7 @@ public class ArraysCompareTest {
     public void compareArrayListDelete() {
         ArraysCompare ac = new ArraysCompare();
         List<String> arrayList = new ArrayList<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         ac.add(arrayList, iterations);
         long result = ac.delete(arrayList, 10000);
         System.out.println(String.format("ArrayList deleting, ms: %s", result));
@@ -69,7 +69,7 @@ public class ArraysCompareTest {
     public void compareLinkedListDelete() {
         ArraysCompare ac = new ArraysCompare();
         List<String> linkedList = new LinkedList<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         ac.add(linkedList, iterations);
         long result = ac.delete(linkedList, 10000);
         System.out.println(String.format("LinkedList deleting, ms: %s", result));
@@ -82,7 +82,7 @@ public class ArraysCompareTest {
     public void compareTreeSetDelete() {
         ArraysCompare ac = new ArraysCompare();
         Set<String> treeSet = new TreeSet<>();
-        int iterations = 10000000;
+        int iterations = 1000000;
         ac.add(treeSet, iterations);
         long result = ac.delete(treeSet, 10000);
         System.out.println(String.format("TreeSet deleting, ms: %s", result));
