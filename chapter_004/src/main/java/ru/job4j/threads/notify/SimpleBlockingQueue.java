@@ -36,7 +36,7 @@ public class SimpleBlockingQueue<T> {
                     this.wait();
                 }
                 this.queue.offer(element);
-                this.notify();
+                this.notifyAll();
             } catch (InterruptedException e) {
                 throw new InterruptedException();
             }
@@ -56,7 +56,7 @@ public class SimpleBlockingQueue<T> {
                     this.wait();
                 }
                 result = this.queue.poll();
-                this.notify();
+                this.notifyAll();
             } catch (InterruptedException e) {
                 throw new InterruptedException();
             }
