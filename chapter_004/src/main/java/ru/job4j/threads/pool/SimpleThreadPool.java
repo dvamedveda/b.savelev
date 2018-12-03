@@ -16,7 +16,7 @@ public class SimpleThreadPool {
     /**
      * Флаг прерывания работы пула
      */
-    private boolean interrupted = false;
+    private volatile boolean interrupted = false;
 
     /**
      * Размер пула потоков.
@@ -48,6 +48,7 @@ public class SimpleThreadPool {
                     Thread.currentThread().interrupt();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }));
         }
@@ -74,6 +75,9 @@ public class SimpleThreadPool {
      */
     public void shutdown() throws InterruptedException {
         interrupted = true;
+        for (Thread thread : this.threads) {
+            thread.interrupt();
+        }
         throw new InterruptedException("Pool thread stopped: " + Thread.currentThread().getName());
     }
 }
