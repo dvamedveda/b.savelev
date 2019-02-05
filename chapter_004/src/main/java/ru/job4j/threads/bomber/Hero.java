@@ -45,7 +45,7 @@ public class Hero extends Creature implements Runnable {
     public void run() {
         Thread.currentThread().setName("Hero");
         board[position.getX()][position.getY()].lock();
-        System.out.println(String.format("%d, %d placed hero", position.getX(), position.getY()));
+        System.out.println(String.format("%d, %d placed hero", position.getX() + 1, position.getY() + 1));
         try {
             while (!exit) {
                 if (needMove && direction == Direction.UP) {
@@ -58,6 +58,10 @@ public class Hero extends Creature implements Runnable {
                     tryMove(new Cell(position.getX() - 1, position.getY()));
                 }
                 Thread.sleep(1000);
+                if (board[position.getX()][position.getY()].hasQueuedThreads()) {
+                    System.out.println(String.format("%s: monster catched me!", Thread.currentThread().getName()));
+                    stopGame();
+                }
             }
             Thread.currentThread().interrupt();
         } catch (InterruptedException e) {

@@ -1,7 +1,5 @@
 package ru.job4j.threads.bomber;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -22,11 +20,6 @@ public class Game {
      * Количество монстров.
      */
     private final int monsterQuantity;
-
-    /**
-     * Пул фиксированного размера для потоков монстров.
-     */
-    private final ExecutorService monsterPool;
 
     /**
      * Сложность игрокого поля (количество блоков на поле).
@@ -81,7 +74,6 @@ public class Game {
             }
         }
         this.hero = new Hero(board, heroPosition);
-        this.monsterPool = Executors.newFixedThreadPool(monsters);
     }
 
     /**
@@ -98,7 +90,6 @@ public class Game {
         setBlocks();
         setMonsters();
     }
-
 
     /**
      * Получить случайную незанятую клетку(кроме клетки героя).
@@ -123,7 +114,7 @@ public class Game {
                 nextBlock = randomCell();
                 board[nextBlock.getX()][nextBlock.getY()].lock();
             } while (!board[nextBlock.getX()][nextBlock.getY()].isLocked());
-            System.out.println(String.format("%d, %d is block", nextBlock.getX(), nextBlock.getY()));
+            System.out.println(String.format("%d, %d is block", nextBlock.getX() + 1, nextBlock.getY() + 1));
         }
     }
 
@@ -137,8 +128,10 @@ public class Game {
             while (!monsterPlace.isEmptyCell(board, monsterPlace)) {
                 monsterPlace = randomCell();
             }
-            monsterPool.execute(new Monster(board, monsterPlace, i));
-            System.out.println(String.format("%d, %d placed monster-%d", monsterPlace.getX(), monsterPlace.getY(), i));
+            Thread nextMonster = new Thread(new Monster(board, monsterPlace, i));
+            nextMonster.setDaemon(true);
+            nextMonster.start();
+            System.out.println(String.format("%d, %d placed monster-%d", monsterPlace.getX() + 1, monsterPlace.getY() + 1, i));
         }
     }
 
@@ -148,6 +141,5 @@ public class Game {
      */
     public void stopGame() {
         hero.stopGame();
-        monsterPool.shutdownNow();
     }
 }

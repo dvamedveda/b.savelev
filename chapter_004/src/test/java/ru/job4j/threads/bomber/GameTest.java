@@ -45,7 +45,7 @@ public class GameTest {
      */
     @Test
     public void whenCreateGameThenMonsterSetSuccess() throws InterruptedException {
-        Game game = new Game(2, 2, 0);
+        Game game = new Game(10, 2, 0);
         game.startGame();
         Thread.sleep(2000);
         ReentrantLock[][] board = game.getBoard();

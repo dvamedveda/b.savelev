@@ -45,9 +45,10 @@ public class Monster extends Creature implements Runnable {
                 if (next.equals(getPosition())) {
                     System.out.println(String.format("%s: can't move, waiting", name));
                 } else {
+                    System.out.println(String.format("%s: going to %d, %d ", name, next.getX() + 1, next.getY() + 1));
                     boolean moveSuccess = move(getPosition(), next);
                     if (moveSuccess) {
-                        System.out.println(String.format("%s: going to %d, %d ", name, next.getX() + 1, next.getY() + 1));
+                        System.out.println(String.format("%s: has come to %d, %d ", name, next.getX() + 1, next.getY() + 1));
                     } else {
                         System.out.println(String.format("%s: next cell locked! Going to another way", name));
                     }

@@ -163,4 +163,27 @@ public class HeroTest {
         Thread.sleep(2000);
         Assert.assertFalse(heroMove.isAlive());
     }
+
+    /**
+     * Проверяется остановка потока героя при съедании его монстром.
+     */
+    @Test
+    public void whenMonsterLockHeroPositionThenGameTerminating() throws InterruptedException {
+        ReentrantLock[][] board = new ReentrantLock[2][2];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = new ReentrantLock();
+            }
+        }
+        Cell startPosition = new Cell(0, 0);
+        Hero hero = new Hero(board, startPosition);
+        Thread heroMove = new Thread(hero);
+        Thread monster = new Thread(new Monster(board, new Cell(1, 1), 1));
+        heroMove.start();
+        monster.start();
+        while (heroMove.isAlive()) {
+            Thread.sleep(100);
+        }
+        Assert.assertFalse(heroMove.isInterrupted());
+    }
 }
