@@ -21,31 +21,17 @@ public class SearchTest {
     private File firstDir = new File(root.getAbsolutePath() + slash + "firstDirectory");
     private File second = new File(firstDir.getAbsolutePath() + slash + "second.second");
     private File secondDir = new File(firstDir.getAbsolutePath() + slash + "secondDirectory");
-    private File third = new File(secondDir.getAbsolutePath() + slash + "third.third");
-    private File fourth = new File(secondDir.getAbsolutePath() + slash + "fourth.fourth");
-    private File thirdDir = new File(root.getAbsolutePath() + slash + "thirdDirectory");
-    private File fifth = new File(thirdDir.getAbsolutePath() + slash + "fifth.fifth");
-    private File sixth = new File(firstDir.getAbsolutePath() + slash + "sixth.sixth");
 
     /**
      * Подготовка тестового окружения.
      */
     @Before
-    public void prepareDirectories() {
+    public void prepareDirectories() throws IOException {
         System.out.println(this.root);
-        try {
-            first.createNewFile();
-            firstDir.mkdir();
-            second.createNewFile();
-            secondDir.mkdir();
-            third.createNewFile();
-            fourth.createNewFile();
-            thirdDir.mkdir();
-            fifth.createNewFile();
-            sixth.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        first.createNewFile();
+        firstDir.mkdir();
+        second.createNewFile();
+        secondDir.mkdir();
 
     }
 
@@ -56,13 +42,8 @@ public class SearchTest {
     public void deleteDirectories() {
         first.delete();
         second.delete();
-        third.delete();
-        fourth.delete();
-        fifth.delete();
-        sixth.delete();
         firstDir.delete();
         secondDir.delete();
-        thirdDir.delete();
     }
 
     /**
@@ -75,17 +56,9 @@ public class SearchTest {
         List<String> exts = new ArrayList<>();
         exts.add(".first");
         exts.add(".second");
-        exts.add(".third");
-        exts.add(".fourth");
-        exts.add(".fifth");
-        exts.add(".sixth");
         List<File> expected = new LinkedList<>();
         expected.add(first);
         expected.add(second);
-        expected.add(third);
-        expected.add(fourth);
-        expected.add(fifth);
-        expected.add(sixth);
         Search search = new Search();
         List<File> result = search.files(path, exts);
         Assert.assertTrue(result.size() == expected.size());
