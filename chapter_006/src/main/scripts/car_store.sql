@@ -69,9 +69,9 @@ select a.name,
        e.name as engine,
        t.name as transmission
 from auto a
-         inner join body b on a.body_id = b.id
-         inner join engine e on a.engine_id = e.id
-         inner join transmission t on a.transmission_id = t.id;
+         left outer join body b on a.body_id = b.id
+         left outer join engine e on a.engine_id = e.id
+         left outer join transmission t on a.transmission_id = t.id;
 
 -- Вывести отдельно детали, которые не используются в машине - кузова.
 select b.id,
