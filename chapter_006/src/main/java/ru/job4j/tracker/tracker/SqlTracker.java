@@ -27,7 +27,7 @@ public class SqlTracker implements Store {
                     config.getProperty("password")
             );
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             throw new IllegalStateException();
         }
     }
@@ -52,7 +52,8 @@ public class SqlTracker implements Store {
      */
     @Override
     public Item add(Item item) {
-        try (PreparedStatement statement = connection.prepareStatement("insert into items(name, description, created) values (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "insert into items(name, description, created) values (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, item.getSummary());
             statement.setString(2, item.getDescription());
             statement.setTimestamp(3, new Timestamp(item.getCreated()));
@@ -63,7 +64,7 @@ public class SqlTracker implements Store {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         return item;
@@ -82,18 +83,15 @@ public class SqlTracker implements Store {
         try (PreparedStatement statement = connection.prepareStatement("select * from items where id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
             statement.setInt(1, Integer.parseInt(id));
             try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    if (resultSet.getInt("id") == Integer.parseInt(id)) {
-                        resultSet.updateString("name", item.getSummary());
-                        resultSet.updateString("description", item.getDescription());
-                        resultSet.updateTimestamp("created", new Timestamp(item.getCreated()));
-                        resultSet.updateRow();
-                        result = true;
-                    }
-                }
+                resultSet.next();
+                resultSet.updateString("name", item.getSummary());
+                resultSet.updateString("description", item.getDescription());
+                resultSet.updateTimestamp("created", new Timestamp(item.getCreated()));
+                resultSet.updateRow();
+                result = true;
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -114,7 +112,7 @@ public class SqlTracker implements Store {
                 result = true;
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -126,19 +124,19 @@ public class SqlTracker implements Store {
      */
     @Override
     public List<Item> findAll() {
-        List<Item> resultItems = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("select * from items")) {
             try (ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
                     Item resultItem = new Item(result.getString("name"), result.getString("description"), result.getTimestamp("created").getTime());
                     resultItem.setId(String.valueOf(result.getInt("id")));
-                    resultItems.add(resultItem);
+                    items.add(resultItem);
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return resultItems;
+        return items;
     }
 
     /**
@@ -149,20 +147,20 @@ public class SqlTracker implements Store {
      */
     @Override
     public List<Item> findByName(String key) {
-        List<Item> resultItems = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement("select * from items where name = ?")) {
             statement.setString(1, key);
             try (ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
                     Item resultItem = new Item(result.getString("name"), result.getString("description"), result.getTimestamp("created").getTime());
                     resultItem.setId(String.valueOf(result.getInt("id")));
-                    resultItems.add(resultItem);
+                    items.add(resultItem);
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return resultItems;
+        return items;
     }
 
     /**
@@ -173,18 +171,18 @@ public class SqlTracker implements Store {
      */
     @Override
     public Item findById(String id) {
-        Item resultItem = null;
+        Item item = null;
         try (PreparedStatement statement = connection.prepareStatement("select * from items where id = ?")) {
             statement.setInt(1, Integer.parseInt(id));
             try (ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
-                    resultItem = new Item(result.getString("name"), result.getString("description"), result.getTimestamp("created").getTime());
-                    resultItem.setId(String.valueOf(result.getInt("id")));
+                    item = new Item(result.getString("name"), result.getString("description"), result.getTimestamp("created").getTime());
+                    item.setId(String.valueOf(result.getInt("id")));
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return resultItem;
+        return item;
     }
 }
