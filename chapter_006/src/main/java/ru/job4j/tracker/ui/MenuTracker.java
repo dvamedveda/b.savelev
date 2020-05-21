@@ -1,9 +1,10 @@
 package ru.job4j.tracker.ui;
 
 import ru.job4j.tracker.tracker.Item;
-import ru.job4j.tracker.tracker.Tracker;
+import ru.job4j.tracker.tracker.SqlTracker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * "Внешний" внутренний класс.
@@ -17,10 +18,11 @@ class Exit extends BaseAction {
 
     /**
      * Реализация действия Выход
-     * @param input объект ввода
-     * @param tracker объект трекера
+     *
+     * @param input      объект ввода
+     * @param sqlTracker объект трекера
      */
-    public void execute(Input input, Tracker tracker) {
+    public void execute(Input input, SqlTracker sqlTracker) {
         System.out.println("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-");
     }
 }
@@ -31,21 +33,23 @@ class Exit extends BaseAction {
 public class MenuTracker {
 
     private Input input;
-    private Tracker tracker;
+    private SqlTracker sqlTracker;
     private ArrayList<UserAction> actions = new ArrayList<>();
 
     /**
      * Конструктор класса меню.
-     * @param input объект ввода.
-     * @param tracker объект трекера.
+     *
+     * @param input      объект ввода.
+     * @param sqlTracker объект трекера.
      */
-    public MenuTracker(Input input, Tracker tracker) {
+    public MenuTracker(Input input, SqlTracker sqlTracker) {
         this.input = input;
-        this.tracker = tracker;
+        this.sqlTracker = sqlTracker;
     }
 
     /**
      * Геттер для получения диапазона допустимых для выбора пользователем пунктов меню.
+     *
      * @return диапазон допустимых пунктов меню.
      */
     public ArrayList<Integer> getOptions() {
@@ -72,7 +76,7 @@ public class MenuTracker {
     public void select(int key) {
         for (UserAction action : this.actions) {
             if (action.key() == key) {
-                action.execute(this.input, this.tracker);
+                action.execute(this.input, this.sqlTracker);
             }
         }
     }
@@ -100,14 +104,14 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             System.out.println("Перед добавлением заявку нужно заполнить!");
             String summary = input.ask("Введите название заявки :");
             String description = input.ask("Введите описание заявки :");
             long createdTime = System.currentTimeMillis();
-            Item addedItem = tracker.add(new Item(summary, description, createdTime));
-            System.out.println(String.format("Заявка с идентификатором %s успешно добавлена.",  addedItem.getId()));
+            Item addedItem = sqlTracker.add(new Item(summary, description, createdTime));
+            System.out.println(String.format("Заявка с идентификатором %s успешно добавлена.", addedItem.getId()));
         }
     }
 
@@ -120,18 +124,18 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String updateId = input.ask("Введите ID заявки : ");
-            if (tracker.findById(updateId) != null) {
+            if (sqlTracker.findById(updateId) != null) {
                 System.out.println("Найдена заявка : ");
-                PrettyPrint.printItem(tracker.findById(updateId));
+                PrettyPrint.printItem(sqlTracker.findById(updateId));
                 String newName = input.ask("Введите новое имя заявки : ");
                 String newDesc = input.ask("Введите новое описание заявки : ");
                 long newCreated = System.currentTimeMillis();
                 Item updateItem = new Item(newName, newDesc, newCreated);
                 updateItem.setId(updateId);
-                tracker.update(updateItem);
+                sqlTracker.replace(updateId, updateItem);
                 System.out.println("Заявка успешно изменена!");
             } else {
                 System.out.println("Заявки с таким ID не найдено!");
@@ -148,11 +152,11 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String deleteId = input.ask("Введите ID заявки : ");
-            if (tracker.findById(deleteId) != null) {
-                tracker.delete(tracker.findById(deleteId));
+            if (sqlTracker.findById(deleteId) != null) {
+                sqlTracker.delete(deleteId);
                 System.out.println(String.format("Заявка с идентификатором %s удалена.", deleteId));
             } else {
                 System.out.println("Заявки с таким ID не найдено!");
@@ -169,10 +173,10 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
-            if (tracker.findAll().size() > 0) {
-                ArrayList<Item> allItems = tracker.findAll();
+            if (sqlTracker.findAll().size() > 0) {
+                List<Item> allItems = sqlTracker.findAll();
                 System.out.println("Найдены следующие заявки : ");
                 for (Item nextFoundItem : allItems) {
                     PrettyPrint.printItem(nextFoundItem);
@@ -192,11 +196,11 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String itemName = input.ask("Введите название заявки : ");
-            if (tracker.findByName(itemName) != null) {
-                ArrayList<Item> foundedItems = tracker.findByName(itemName);
+            if (sqlTracker.findByName(itemName).size() > 0) {
+                List<Item> foundedItems = sqlTracker.findByName(itemName);
                 System.out.println("Найдены следующие заявки : ");
                 for (Item nextFoundItem : foundedItems) {
                     PrettyPrint.printItem(nextFoundItem);
@@ -216,11 +220,11 @@ public class MenuTracker {
             super(key, name);
         }
 
-        public void execute(Input input, Tracker tracker) {
+        public void execute(Input input, SqlTracker sqlTracker) {
             System.out.println(String.format("Выбран пункт меню %s", this.info()));
             String searchId = input.ask("Введите ID заявки : ");
-            if (tracker.findById(searchId) != null) {
-                Item foundedItem = tracker.findById(searchId);
+            if (sqlTracker.findById(searchId) != null) {
+                Item foundedItem = sqlTracker.findById(searchId);
                 System.out.println("Найдена заявка : ");
                 PrettyPrint.printItem(foundedItem);
             } else {

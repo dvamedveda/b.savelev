@@ -2,7 +2,8 @@ package ru.job4j.tracker.ui;
 
 import org.junit.Test;
 import ru.job4j.tracker.tracker.Item;
-import ru.job4j.tracker.tracker.Tracker;
+import ru.job4j.tracker.tracker.MemTracker;
+import ru.job4j.tracker.tracker.SqlTracker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -96,11 +97,12 @@ public class StubInputTest {
      */
     @Test
     public void whenChooseAddItemThenAddingIt() {
-        Tracker tracker = new Tracker();
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
         Input input = new StubInput(new String[]{"1", "Тестовая заявка номер 1.", "Описание тестовой заявки номер 1.", "0"});
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
-        Item addedItem = tracker.findAll().get(0);
+        Item addedItem = sqlTracker.findAll().get(0);
         assertThat(addedItem.getSummary(), is("Тестовая заявка номер 1."));
         assertThat(addedItem.getDescription(), is("Описание тестовой заявки номер 1."));
     }
@@ -110,13 +112,14 @@ public class StubInputTest {
      */
     @Test
     public void whenUpdatingItemThenUpdateIt() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item updatingItem = tracker.findAll().get(0);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        Item updatingItem = sqlTracker.findAll().get(0);
         Input input = new StubInput(new String[]{"2", updatingItem.getId(), "Заявка 2", "Описание 2", "0"});
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
-        Item updatedItem = tracker.findAll().get(0);
+        Item updatedItem = sqlTracker.findAll().get(0);
         assertThat(updatedItem.getSummary(), is("Заявка 2"));
         assertThat(updatedItem.getDescription(), is("Описание 2"));
     }
@@ -126,13 +129,14 @@ public class StubInputTest {
      */
     @Test
     public void whenDeleteItemThenItDeleting() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item deletingItem = tracker.findAll().get(0);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        Item deletingItem = sqlTracker.findAll().get(0);
         Input input = new StubInput(new String[]{"3", deletingItem.getId(), "0"});
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
-        assertThat(tracker.findAll(), is(new ArrayList<Item>()));
+        assertThat(sqlTracker.findAll(), is(new ArrayList<Item>()));
     }
 
     /**
@@ -141,9 +145,9 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveOneThenFindOne() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item firstItem = tracker.findAll().get(0);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        Item firstItem = sqlTracker.findAll().get(0);
         Input input = new StubInput(new String[]{"4", "0"});
         this.loadByteOut();
         String expected = new StringBuilder()
@@ -159,7 +163,7 @@ public class StubInputTest {
                 .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
                 .append(delimiter)
                 .toString();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String result = new String(this.byteout.toByteArray());
         assertThat(expected, is(result));
@@ -172,14 +176,15 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveTwoThenFindTwo() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        tracker.add(new Item("Заявка 2", "Описание 2", 123L));
-        Item firstItem = tracker.findAll().get(0);
-        Item secondItem = tracker.findAll().get(1);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
+        Item firstItem = sqlTracker.findAll().get(0);
+        Item secondItem = sqlTracker.findAll().get(1);
         Input input = new StubInput(new String[]{"4", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -206,10 +211,10 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveNoItemsThenFindNothing() {
-        Tracker tracker = new Tracker();
+        SqlTracker sqlTracker = new SqlTracker();
         Input input = new StubInput(new String[]{"4", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -234,14 +239,15 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsAndTwoWithNameThenFindTwo() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        tracker.add(new Item("Заявка 1", "Описание 2", 123L));
-        Item firstItem = tracker.findAll().get(0);
-        Item secondItem = tracker.findAll().get(1);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        sqlTracker.add(new Item("Заявка 1", "Описание 2", 123L));
+        Item firstItem = sqlTracker.findAll().get(0);
+        Item secondItem = sqlTracker.findAll().get(1);
         Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -268,13 +274,14 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsButOneWithNameThenFindOne() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        tracker.add(new Item("Заявка 2", "Описание 2", 123L));
-        Item firstItem = tracker.findAll().get(0);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
+        Item firstItem = sqlTracker.findAll().get(0);
         Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -300,12 +307,13 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsButNothingWithNameThenFindNothing() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        tracker.add(new Item("Заявка 2", "Описание 2", 123L));
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
         Input input = new StubInput(new String[]{"5", "Заявка 3", "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -330,12 +338,13 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByIdAndHaveTwoItemsThenFindOne() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item firstItem = tracker.findAll().get(0);
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        Item firstItem = sqlTracker.findAll().get(0);
         Input input = new StubInput(new String[]{"6", firstItem.getId(), "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -361,12 +370,13 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByIdAndHaveNoItemsWithIdThenFindNothing() {
-        Tracker tracker = new Tracker();
-        tracker.add(new Item("Заявка 1", "Описание 1", 123L));
+        SqlTracker sqlTracker = new SqlTracker();
+        sqlTracker.init();
+        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
         String unexistId = "123456789";
         Input input = new StubInput(new String[]{"6", unexistId, "0"});
         this.loadByteOut();
-        StartUI ui = new StartUI(tracker, input);
+        StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
         String result = new String(this.byteout.toByteArray());
         String expected = new StringBuilder()

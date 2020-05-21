@@ -5,13 +5,13 @@ import java.util.Iterator;
 import java.util.Random;
 
 /**
- * Класс, описывающий трекер и его методы для работы с заявками.
+ * Класс, описывающий трекер храняющийся в памяти и его методы для работы с заявками.
  *
  * @author - b.savelev (mailto: justmustdie@yandex.ru)
  * @version - 1.0
  * @since 0.1
  */
-public class Tracker {
+public class MemTracker {
     /**
      * Список заявок
      */

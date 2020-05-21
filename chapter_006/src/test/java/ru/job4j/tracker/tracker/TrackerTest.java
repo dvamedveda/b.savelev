@@ -21,11 +21,11 @@ public class TrackerTest {
      */
     @Test
     public void whenAddingItemThenAddingIt() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
+        memTracker.add(item);
 
-        assertThat(tracker.findAll().get(0), is(item));
+        assertThat(memTracker.findAll().get(0), is(item));
     }
 
     /**
@@ -33,14 +33,14 @@ public class TrackerTest {
      */
     @Test
     public void whenUpdateItemThenItUpdating() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
-        Item updatedItem = tracker.findAll().get(0);
+        memTracker.add(item);
+        Item updatedItem = memTracker.findAll().get(0);
         Item newItem = new Item("Измененная тестовая заявка", "Измененное тестовое описание заявки", 54321L);
         newItem.setId(updatedItem.getId());
-        tracker.update(newItem);
-        Item foundedItem = tracker.findById(updatedItem.getId());
+        memTracker.update(newItem);
+        Item foundedItem = memTracker.findById(updatedItem.getId());
 
         assertThat(foundedItem.getSummary(), is("Измененная тестовая заявка"));
         assertThat(foundedItem.getDescription(), is("Измененное тестовое описание заявки"));
@@ -52,13 +52,13 @@ public class TrackerTest {
      */
     @Test
     public void whenDeletingItemThenItDeleting() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
-        Item deletingItem = tracker.findAll().get(0);
+        memTracker.add(item);
+        Item deletingItem = memTracker.findAll().get(0);
         String deletingSymmary = deletingItem.getSummary();
-        tracker.delete(deletingItem);
-        assertNull(tracker.findByName(deletingSymmary));
+        memTracker.delete(deletingItem);
+        assertNull(memTracker.findByName(deletingSymmary));
     }
 
     /**
@@ -74,12 +74,12 @@ public class TrackerTest {
         expected.add(itemTwo);
         expected.add(itemThree);
 
-        Tracker tracker = new Tracker();
-        tracker.add(itemOne);
-        tracker.add(itemTwo);
-        tracker.add(itemThree);
+        MemTracker memTracker = new MemTracker();
+        memTracker.add(itemOne);
+        memTracker.add(itemTwo);
+        memTracker.add(itemThree);
 
-        assertThat(tracker.findAll(), is(expected));
+        assertThat(memTracker.findAll(), is(expected));
     }
 
     /**
@@ -87,16 +87,16 @@ public class TrackerTest {
      */
     @Test
     public void whenExistTwoItemWithSameNameThenFindTwoItems() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item itemOne = new Item("Тестовая заявка", "Тестовое описание заявки 1", 12345L);
         Item itemTwo = new Item("Тестовая заявка", "Тестовое описание заявки 2", 54321L);
-        tracker.add(itemOne);
-        tracker.add(itemTwo);
+        memTracker.add(itemOne);
+        memTracker.add(itemTwo);
         String sameSummary = "Тестовая заявка";
         ArrayList<Item> expected = new ArrayList<>();
         expected.add(itemOne);
         expected.add(itemTwo);
-        assertThat(expected, is(tracker.findByName(sameSummary)));
+        assertThat(expected, is(memTracker.findByName(sameSummary)));
     }
 
     /**
@@ -104,15 +104,15 @@ public class TrackerTest {
      */
     @Test
     public void whenExistOneItemWithNameThenFindingOneItem() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item itemOne = new Item("Первая тестовая заявка", "Тестовое описание первой заявки", 12345L);
         Item itemTwo = new Item("Вторая тестовая заявка", "Тестовое описание второй заявки", 54321L);
-        tracker.add(itemOne);
-        tracker.add(itemTwo);
+        memTracker.add(itemOne);
+        memTracker.add(itemTwo);
         String summary = "Первая тестовая заявка";
         ArrayList<Item> expected = new ArrayList<>();
         expected.add(itemOne);
-        assertThat(expected, is(tracker.findByName(summary)));
+        assertThat(expected, is(memTracker.findByName(summary)));
     }
 
     /**
@@ -120,10 +120,10 @@ public class TrackerTest {
      */
     @Test
     public void whenFindingByNotExistingNameThenNotFindingIt() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
-        assertNull(tracker.findByName(""));
+        memTracker.add(item);
+        assertNull(memTracker.findByName(""));
     }
 
     /**
@@ -131,11 +131,11 @@ public class TrackerTest {
      */
     @Test
     public void whenFindingByIdThenFindingIt() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
-        String id = tracker.findAll().get(0).getId();
-        assertThat(id, is(tracker.findById(id).getId()));
+        memTracker.add(item);
+        String id = memTracker.findAll().get(0).getId();
+        assertThat(id, is(memTracker.findById(id).getId()));
     }
 
     /**
@@ -143,10 +143,10 @@ public class TrackerTest {
      */
     @Test
     public void whenFindingByNotExistingIdThenReturnsNull() {
-        Tracker tracker = new Tracker();
+        MemTracker memTracker = new MemTracker();
         Item item = new Item("Тестовая заявка", "Тестовое описание заявки", 12345L);
-        tracker.add(item);
+        memTracker.add(item);
         String id = "123";
-        assertNull(tracker.findById(id));
+        assertNull(memTracker.findById(id));
     }
 }
