@@ -13,3 +13,9 @@ notifications:
       - justmustdie@yandex.ru
     on_success: never
     on_failure: always
+
+services:
+  - postgresql
+
+before_install:
+  - psql -c 'create database tracker;' -U postgres
