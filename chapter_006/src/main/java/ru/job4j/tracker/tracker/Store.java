@@ -8,11 +8,6 @@ import java.util.List;
 public interface Store extends AutoCloseable {
 
     /**
-     * Инициализация подключения к базе данных.
-     */
-    void init();
-
-    /**
      * Добавление заявки в хранилище.
      *
      * @param item заявка.

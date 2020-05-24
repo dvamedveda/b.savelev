@@ -1,15 +1,21 @@
 package ru.job4j.tracker.ui;
 
 import org.junit.Test;
+import ru.job4j.tracker.tracker.ConnectionAuto;
+import ru.job4j.tracker.tracker.ConnectionRollback;
 import ru.job4j.tracker.tracker.Item;
-import ru.job4j.tracker.tracker.MemTracker;
 import ru.job4j.tracker.tracker.SqlTracker;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -92,19 +98,38 @@ public class StubInputTest {
         return result;
     }
 
+    public Connection init() {
+        Connection result = null;
+        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
+            Properties config = new Properties();
+            config.load(in);
+            Class.forName(config.getProperty("driver-class-name"));
+            result = DriverManager.getConnection(
+                    config.getProperty("url"),
+                    config.getProperty("username"),
+                    config.getProperty("password")
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     /**
      * Тест, проверяющий, что при выборе пункта меню "Добавить заявку", она добавляется.
      */
     @Test
     public void whenChooseAddItemThenAddingIt() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        Input input = new StubInput(new String[]{"1", "Тестовая заявка номер 1.", "Описание тестовой заявки номер 1.", "0"});
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        Item addedItem = sqlTracker.findAll().get(0);
-        assertThat(addedItem.getSummary(), is("Тестовая заявка номер 1."));
-        assertThat(addedItem.getDescription(), is("Описание тестовой заявки номер 1."));
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            Input input = new StubInput(new String[]{"1", "Тестовая заявка номер 1.", "Описание тестовой заявки номер 1.", "0"});
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            Item addedItem = sqlTracker.findAll().get(0);
+            assertThat(addedItem.getSummary(), is("Тестовая заявка номер 1."));
+            assertThat(addedItem.getDescription(), is("Описание тестовой заявки номер 1."));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,16 +137,18 @@ public class StubInputTest {
      */
     @Test
     public void whenUpdatingItemThenUpdateIt() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item updatingItem = sqlTracker.findAll().get(0);
-        Input input = new StubInput(new String[]{"2", updatingItem.getId(), "Заявка 2", "Описание 2", "0"});
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        Item updatedItem = sqlTracker.findAll().get(0);
-        assertThat(updatedItem.getSummary(), is("Заявка 2"));
-        assertThat(updatedItem.getDescription(), is("Описание 2"));
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            Item updatingItem = sqlTracker.findAll().get(0);
+            Input input = new StubInput(new String[]{"2", updatingItem.getId(), "Заявка 2", "Описание 2", "0"});
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            Item updatedItem = sqlTracker.findAll().get(0);
+            assertThat(updatedItem.getSummary(), is("Заявка 2"));
+            assertThat(updatedItem.getDescription(), is("Описание 2"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -129,14 +156,15 @@ public class StubInputTest {
      */
     @Test
     public void whenDeleteItemThenItDeleting() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item deletingItem = sqlTracker.findAll().get(0);
-        Input input = new StubInput(new String[]{"3", deletingItem.getId(), "0"});
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        assertThat(sqlTracker.findAll(), is(new ArrayList<Item>()));
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            String id = sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L)).getId();
+            Input input = new StubInput(new String[]{"3", id, "0"});
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            assertThat(sqlTracker.findAll().size(), is(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -145,29 +173,32 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveOneThenFindOne() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item firstItem = sqlTracker.findAll().get(0);
-        Input input = new StubInput(new String[]{"4", "0"});
-        this.loadByteOut();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 4. Поиск всех заявок.")
-                .append(delimiter)
-                .append("Найдены следующие заявки : ")
-                .append(delimiter)
-                .append(this.printItem(firstItem))
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            Item firstItem = sqlTracker.findAll().get(0);
+            Input input = new StubInput(new String[]{"4", "0"});
+            this.loadByteOut();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 4. Поиск всех заявок.")
+                    .append(delimiter)
+                    .append("Найдены следующие заявки : ")
+                    .append(delimiter)
+                    .append(this.printItem(firstItem))
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -176,33 +207,37 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveTwoThenFindTwo() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
-        Item firstItem = sqlTracker.findAll().get(0);
-        Item secondItem = sqlTracker.findAll().get(1);
-        Input input = new StubInput(new String[]{"4", "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 4. Поиск всех заявок.")
-                .append(delimiter)
-                .append("Найдены следующие заявки : ")
-                .append(delimiter)
-                .append(this.printItem(firstItem))
-                .append(this.printItem(secondItem))
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
+            Item firstItem = sqlTracker.findAll().get(0);
+            Item secondItem = sqlTracker.findAll().get(1);
+            Input input = new StubInput(new String[]{"4", "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 4. Поиск всех заявок.")
+                    .append(delimiter)
+                    .append("Найдены следующие заявки : ")
+                    .append(delimiter)
+                    .append(this.printItem(firstItem))
+                    .append(this.printItem(secondItem))
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     /**
@@ -211,26 +246,29 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchAllAndHaveNoItemsThenFindNothing() {
-        SqlTracker sqlTracker = new SqlTracker();
-        Input input = new StubInput(new String[]{"4", "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 4. Поиск всех заявок.")
-                .append(delimiter)
-                .append("На данный момент не существует никаких заявок.")
-                .append(delimiter)
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(result, is(expected));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            Input input = new StubInput(new String[]{"4", "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 4. Поиск всех заявок.")
+                    .append(delimiter)
+                    .append("На данный момент не существует никаких заявок.")
+                    .append(delimiter)
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(result, is(expected));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -239,33 +277,35 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsAndTwoWithNameThenFindTwo() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        sqlTracker.add(new Item("Заявка 1", "Описание 2", 123L));
-        Item firstItem = sqlTracker.findAll().get(0);
-        Item secondItem = sqlTracker.findAll().get(1);
-        Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 5. Поиск заявки по названию.")
-                .append(delimiter)
-                .append("Найдены следующие заявки : ")
-                .append(delimiter)
-                .append(this.printItem(firstItem))
-                .append(this.printItem(secondItem))
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            sqlTracker.add(new Item("Заявка 1", "Описание 2", 123L));
+            Item firstItem = sqlTracker.findAll().get(0);
+            Item secondItem = sqlTracker.findAll().get(1);
+            Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 5. Поиск заявки по названию.")
+                    .append(delimiter)
+                    .append("Найдены следующие заявки : ")
+                    .append(delimiter)
+                    .append(this.printItem(firstItem))
+                    .append(this.printItem(secondItem))
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -274,31 +314,33 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsButOneWithNameThenFindOne() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
-        Item firstItem = sqlTracker.findAll().get(0);
-        Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 5. Поиск заявки по названию.")
-                .append(delimiter)
-                .append("Найдены следующие заявки : ")
-                .append(delimiter)
-                .append(this.printItem(firstItem))
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
+            Item firstItem = sqlTracker.findAll().get(0);
+            Input input = new StubInput(new String[]{"5", "Заявка 1", "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 5. Поиск заявки по названию.")
+                    .append(delimiter)
+                    .append("Найдены следующие заявки : ")
+                    .append(delimiter)
+                    .append(this.printItem(firstItem))
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -307,29 +349,31 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByNameAndHaveTwoItemsButNothingWithNameThenFindNothing() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
-        Input input = new StubInput(new String[]{"5", "Заявка 3", "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 5. Поиск заявки по названию.")
-                .append(delimiter)
-                .append("Заявки с таким названием не найдено!")
-                .append(delimiter)
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            sqlTracker.add(new Item("Заявка 2", "Описание 2", 123L));
+            Input input = new StubInput(new String[]{"5", "Заявка 3", "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 5. Поиск заявки по названию.")
+                    .append(delimiter)
+                    .append("Заявки с таким названием не найдено!")
+                    .append(delimiter)
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -338,30 +382,32 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByIdAndHaveTwoItemsThenFindOne() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        Item firstItem = sqlTracker.findAll().get(0);
-        Input input = new StubInput(new String[]{"6", firstItem.getId(), "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 6. Поиск заявки по ID.")
-                .append(delimiter)
-                .append("Найдена заявка : ")
-                .append(delimiter)
-                .append(this.printItem(firstItem))
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        String result = new String(this.byteout.toByteArray());
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            Item firstItem = sqlTracker.findAll().get(0);
+            Input input = new StubInput(new String[]{"6", firstItem.getId(), "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 6. Поиск заявки по ID.")
+                    .append(delimiter)
+                    .append("Найдена заявка : ")
+                    .append(delimiter)
+                    .append(this.printItem(firstItem))
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            String result = new String(this.byteout.toByteArray());
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -370,28 +416,30 @@ public class StubInputTest {
      */
     @Test
     public void whenSearchByIdAndHaveNoItemsWithIdThenFindNothing() {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
-        sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
-        String unexistId = "123456789";
-        Input input = new StubInput(new String[]{"6", unexistId, "0"});
-        this.loadByteOut();
-        StartUI ui = new StartUI(sqlTracker, input);
-        ui.startWork();
-        String result = new String(this.byteout.toByteArray());
-        String expected = new StringBuilder()
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 6. Поиск заявки по ID.")
-                .append(delimiter)
-                .append("Заявки с таким ID не найдено!")
-                .append(delimiter)
-                .append(delimiter)
-                .append(this.menu)
-                .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
-                .append(delimiter)
-                .toString();
-        assertThat(expected, is(result));
-        this.loadStandartOut();
+        try (SqlTracker sqlTracker = new SqlTracker(ConnectionRollback.create(this.init()))) {
+            sqlTracker.add(new Item("Заявка 1", "Описание 1", 123L));
+            String unexistId = "123456789";
+            Input input = new StubInput(new String[]{"6", unexistId, "0"});
+            this.loadByteOut();
+            StartUI ui = new StartUI(sqlTracker, input);
+            ui.startWork();
+            String result = new String(this.byteout.toByteArray());
+            String expected = new StringBuilder()
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 6. Поиск заявки по ID.")
+                    .append(delimiter)
+                    .append("Заявки с таким ID не найдено!")
+                    .append(delimiter)
+                    .append(delimiter)
+                    .append(this.menu)
+                    .append("Выбран пункт меню 0. Выход из программы. До свидания! -=^_^=-")
+                    .append(delimiter)
+                    .toString();
+            assertThat(expected, is(result));
+            this.loadStandartOut();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

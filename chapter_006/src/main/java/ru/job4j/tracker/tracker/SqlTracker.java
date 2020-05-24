@@ -12,24 +12,8 @@ import java.util.Properties;
 public class SqlTracker implements Store {
     private Connection connection;
 
-    /**
-     * Инициализация подключения к базе данных.
-     */
-    @Override
-    public void init() {
-        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
-            Properties config = new Properties();
-            config.load(in);
-            Class.forName(config.getProperty("driver-class-name"));
-            connection = DriverManager.getConnection(
-                    config.getProperty("url"),
-                    config.getProperty("username"),
-                    config.getProperty("password")
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
-        }
+    public SqlTracker(Connection connection) {
+        this.connection = connection;
     }
 
     /**

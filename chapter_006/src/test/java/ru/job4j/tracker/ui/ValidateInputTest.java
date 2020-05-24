@@ -3,6 +3,7 @@ package ru.job4j.tracker.ui;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.job4j.tracker.tracker.ConnectionAuto;
 import ru.job4j.tracker.tracker.MemTracker;
 import ru.job4j.tracker.tracker.SqlTracker;
 
@@ -73,7 +74,7 @@ public class ValidateInputTest {
      */
     @Test
     public void whenInvalidInputFromUserThenGetError() {
-        SqlTracker sqlTracker = new SqlTracker();
+        SqlTracker sqlTracker = new SqlTracker(new ConnectionAuto().init());
         Input input = new ValidateInput(new StubInput(new String[]{"abc", "0"}));
         StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();
@@ -92,7 +93,7 @@ public class ValidateInputTest {
      */
     @Test
     public void whenInvalidMenuNumberThenGetError() {
-        SqlTracker sqlTracker = new SqlTracker();
+        SqlTracker sqlTracker = new SqlTracker(new ConnectionAuto().init());
         Input input = new ValidateInput(new StubInput(new String[]{"-1", "0"}));
         StartUI ui = new StartUI(sqlTracker, input);
         ui.startWork();

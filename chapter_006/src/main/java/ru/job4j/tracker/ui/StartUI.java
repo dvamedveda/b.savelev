@@ -1,5 +1,6 @@
 package ru.job4j.tracker.ui;
 
+import ru.job4j.tracker.tracker.ConnectionAuto;
 import ru.job4j.tracker.tracker.SqlTracker;
 
 /**
@@ -47,8 +48,7 @@ public class StartUI {
      * @param args параметры запуска.
      */
     public static void main(String[] args) {
-        SqlTracker sqlTracker = new SqlTracker();
-        sqlTracker.init();
+        SqlTracker sqlTracker = new SqlTracker(new ConnectionAuto().init());
         Input input = new ValidateInput(new ConsoleInput());
         StartUI startUI = new StartUI(sqlTracker, input);
         startUI.startWork();
