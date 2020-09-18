@@ -43,9 +43,10 @@ public class Demo {
      */
     public static void main(String[] args) throws Throwable {
         memoryInfo();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 30000; i++) {
             if (i % 1000 == 0 & i != 0) {
                 memoryInfo();
+                System.out.println("Next thousand created...");
             }
             User newUser = new User("someuser");
             newUser = null;
