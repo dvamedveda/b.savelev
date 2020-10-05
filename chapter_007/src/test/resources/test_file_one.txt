@@ -1,0 +1,2 @@
+This is a just text file, which need for test in SoftCache tests.
+This is the first file.
