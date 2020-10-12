@@ -1,6 +1,5 @@
 package ru.job4j.tdd;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,12 +10,12 @@ import java.util.function.Predicate;
 public class Cinema3D implements Cinema {
     @Override
     public List<Session> find(Predicate<Session> filter) {
-        return Arrays.asList(new Session3D());
+        return null;
     }
 
     @Override
     public Ticket buy(Account account, int row, int col, Calendar date) {
-        return new Ticket3D();
+        return null;
     }
 
     @Override

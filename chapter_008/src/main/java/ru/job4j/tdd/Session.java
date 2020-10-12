@@ -5,10 +5,4 @@ package ru.job4j.tdd;
  */
 public interface Session {
 
-    /**
-     * Получить тип сеанса.
-     *
-     * @return тип сеанса.
-     */
-    String getType();
 }
