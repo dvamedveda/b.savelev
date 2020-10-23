@@ -43,7 +43,7 @@ public class LightCar implements Car {
      */
     @Override
     public String getBrand() {
-        return null;
+        return this.brand;
     }
 
     /**
@@ -53,7 +53,7 @@ public class LightCar implements Car {
      */
     @Override
     public String getModel() {
-        return null;
+        return this.model;
     }
 
     /**
@@ -64,7 +64,7 @@ public class LightCar implements Car {
      */
     @Override
     public int getSize() {
-        return 0;
+        return this.size;
     }
 
     /**
@@ -74,7 +74,7 @@ public class LightCar implements Car {
      */
     @Override
     public String getParkedOn() {
-        return null;
+        return this.parkedOn;
     }
 
     /**
@@ -84,6 +84,6 @@ public class LightCar implements Car {
      */
     @Override
     public void setParkedOn(String parkedOn) {
-
+        this.parkedOn = parkedOn;
     }
 }

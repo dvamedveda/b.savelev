@@ -23,7 +23,7 @@ public class HeavyCar implements Car {
     /**
      * Размер автомобиля.
      */
-    private int size = 2;
+    private int size;
 
     /**
      * Конструктор автомобиля.
@@ -31,9 +31,10 @@ public class HeavyCar implements Car {
      * @param brand марка автомобиля.
      * @param model модель автомобиля.
      */
-    public HeavyCar(String brand, String model) {
+    public HeavyCar(String brand, String model, int size) {
         this.brand = brand;
         this.model = model;
+        this.size = size;
     }
 
     /**
@@ -43,7 +44,7 @@ public class HeavyCar implements Car {
      */
     @Override
     public String getBrand() {
-        return null;
+        return this.brand;
     }
 
     /**
@@ -53,7 +54,7 @@ public class HeavyCar implements Car {
      */
     @Override
     public String getModel() {
-        return null;
+        return this.model;
     }
 
     /**
@@ -64,7 +65,7 @@ public class HeavyCar implements Car {
      */
     @Override
     public int getSize() {
-        return 0;
+        return this.size;
     }
 
     /**
@@ -74,7 +75,7 @@ public class HeavyCar implements Car {
      */
     @Override
     public String getParkedOn() {
-        return null;
+        return this.parkedOn;
     }
 
     /**
@@ -84,6 +85,6 @@ public class HeavyCar implements Car {
      */
     @Override
     public void setParkedOn(String parkedOn) {
-
+        this.parkedOn = parkedOn;
     }
 }

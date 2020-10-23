@@ -33,7 +33,13 @@ public class Parking {
      * @return есть ли место.
      */
     public boolean checkPlace(Car car) {
-        return false;
+        boolean result;
+        if (car.getSize() == 1) {
+            result = this.light.canNextLight();
+        } else {
+            result = this.heavy.canNextHeavy(car.getSize()) || this.light.canNextHeavy(car.getSize());
+        }
+        return result;
     }
 
     /**
@@ -43,6 +49,14 @@ public class Parking {
      * @return была ли припаркована автомобиль.
      */
     public boolean park(Car car) {
-        return false;
+        boolean result = false;
+        if (checkPlace(car)) {
+            if (car.getSize() == 1) {
+                result = this.light.place(car);
+            } else {
+                result = this.heavy.place(car) || this.light.place(car);
+            }
+        }
+        return result;
     }
 }

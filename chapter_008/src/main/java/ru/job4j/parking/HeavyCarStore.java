@@ -25,12 +25,19 @@ public class HeavyCarStore implements CarStore {
 
     /**
      * Может ли стоянка вместить еще одну грузовую машину.
-     *
+     * @param size размер грузовой машины.
      * @return да или нет.
      */
     @Override
-    public boolean canNextHeavy() {
-        return false;
+    public boolean canNextHeavy(int size) {
+        boolean result = false;
+        for (Car car : this.store) {
+            if (car == null) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -50,7 +57,13 @@ public class HeavyCarStore implements CarStore {
      */
     @Override
     public int placesAvailable() {
-        return 0;
+        int count = 0;
+        for (Car car : this.store) {
+            if (car == null) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -60,7 +73,7 @@ public class HeavyCarStore implements CarStore {
      */
     @Override
     public int placesTotal() {
-        return 0;
+        return this.store.length;
     }
 
     /**
@@ -71,6 +84,17 @@ public class HeavyCarStore implements CarStore {
      */
     @Override
     public boolean place(Car car) {
-        return false;
+        boolean result = false;
+        if (car.getSize() > 1) {
+            for (int i = 0; i < this.store.length; i++) {
+                if (this.store[i] == null) {
+                    this.store[i] = car;
+                    this.store[i].setParkedOn(this.parkingName);
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }

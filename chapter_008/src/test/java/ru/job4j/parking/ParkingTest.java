@@ -18,7 +18,7 @@ public class ParkingTest {
         Parking parking = new Parking(2, 2);
         Car lightOne = new LightCar("Honda", "Accord");
         Car lightTwo = new LightCar("Toyota", "East");
-        Car heavyOne = new HeavyCar("ZIL", "150");
+        Car heavyOne = new HeavyCar("ZIL", "150", 2);
         Assert.assertThat(parking.checkPlace(lightOne), is(true));
         Assert.assertThat(parking.checkPlace(lightTwo), is(true));
         Assert.assertThat(parking.checkPlace(heavyOne), is(true));
@@ -38,8 +38,8 @@ public class ParkingTest {
         Parking parking = new Parking(2, 1);
         Car lightOne = new LightCar("Honda", "Accord");
         Car lightTwo = new LightCar("Toyota", "East");
-        Car heavyOne = new HeavyCar("ZIL", "150");
-        Car heavyTwo = new HeavyCar("ZIL", "200");
+        Car heavyOne = new HeavyCar("ZIL", "150", 2);
+        Car heavyTwo = new HeavyCar("ZIL", "200", 2);
         Assert.assertThat(parking.checkPlace(lightOne), is(true));
         Assert.assertThat(parking.checkPlace(lightTwo), is(true));
         Assert.assertThat(parking.checkPlace(heavyOne), is(true));

@@ -15,7 +15,7 @@ public class HeavyCarTest {
      */
     @Test
     public void whenCreateCarThenCreateSuccess() {
-        Car car = new HeavyCar("GAZ", "Sobol");
+        Car car = new HeavyCar("GAZ", "Sobol", 2);
         Assert.assertThat(car.getBrand(), is("GAZ"));
         Assert.assertThat(car.getModel(), is("Sobol"));
         Assert.assertThat(car.getSize(), is(2));

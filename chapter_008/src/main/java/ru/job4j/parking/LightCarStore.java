@@ -1,5 +1,7 @@
 package ru.job4j.parking;
 
+import java.util.Arrays;
+
 /**
  * Реализация стоянки для легковых машин.
  */
@@ -24,12 +26,36 @@ public class LightCarStore implements CarStore {
 
     /**
      * Может ли стоянка вместить еще одну грузовую машину.
-     *
+     * @param size размер грузовой машины
      * @return да или нет.
      */
     @Override
-    public boolean canNextHeavy() {
-        return false;
+    public boolean canNextHeavy(int size) {
+        boolean result = size <= this.store.length;
+        boolean havePlace = false;
+        if (result) {
+            for (int i = 0; i < this.store.length; i++) {
+                if (havePlace) {
+                    break;
+                }
+                if (i + size > this.store.length) {
+                    result = false;
+                    break;
+                } else {
+                    if (this.store[i] == null) {
+                        for (int s = 1; s < size; s++) {
+                            if (this.store[i + s] != null) {
+                                havePlace = false;
+                                break;
+                            } else {
+                                havePlace = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -39,7 +65,14 @@ public class LightCarStore implements CarStore {
      */
     @Override
     public boolean canNextLight() {
-        return false;
+        boolean result = false;
+        for (Car car : this.store) {
+            if (car == null) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -49,7 +82,13 @@ public class LightCarStore implements CarStore {
      */
     @Override
     public int placesAvailable() {
-        return 0;
+        int count = 0;
+        for (Car car : this.store) {
+            if (car == null) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -59,7 +98,7 @@ public class LightCarStore implements CarStore {
      */
     @Override
     public int placesTotal() {
-        return 0;
+        return this.store.length;
     }
 
     /**
@@ -70,6 +109,49 @@ public class LightCarStore implements CarStore {
      */
     @Override
     public boolean place(Car car) {
-        return false;
+        boolean result = false;
+        if (car.getSize() > 1) {
+            for (int i = 0; i < this.store.length; i++) {
+                if (result) {
+                    break;
+                }
+                if (i + car.getSize() > this.store.length) {
+                    result = false;
+                    break;
+                }
+                if (suitableForHeavy(Arrays.copyOfRange(this.store, i, car.getSize() - 1))) {
+                    for (int s = 0; s < car.getSize(); s++) {
+                        this.store[i + s] = car;
+                        result = true;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < this.store.length; i++) {
+                if (this.store[i] == null) {
+                    car.setParkedOn(this.parkingName);
+                    this.store[i] = car;
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Проверить, подходит ли подмассив для хранения грузового автомобиля.
+     *
+     * @param cars подмассив.
+     * @return пусты ли все ячейки.
+     */
+    private boolean suitableForHeavy(Car[] cars) {
+        boolean result = true;
+        for (Car car : cars) {
+            if (car != null) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 }

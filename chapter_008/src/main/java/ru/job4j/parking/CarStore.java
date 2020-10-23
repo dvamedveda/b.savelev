@@ -7,10 +7,10 @@ public interface CarStore {
 
     /**
      * Может ли стоянка вместить еще одну грузовую машину.
-     *
+     * @param size размер машины.
      * @return да или нет.
      */
-    boolean canNextHeavy();
+    boolean canNextHeavy(int size);
 
     /**
      * Может ли стоянка вместить еще одну легковую машину.
