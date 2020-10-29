@@ -55,4 +55,11 @@ public abstract class Store {
      * @return подходит ли хранилище.
      */
     public abstract boolean isSuitable(Food food);
+
+    /**
+     * Метод для очистки хранилища.
+     */
+    public void clearStore() {
+        this.foods = new ArrayList<>();
+    }
 }

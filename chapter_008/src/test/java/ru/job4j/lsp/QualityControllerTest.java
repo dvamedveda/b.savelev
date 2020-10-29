@@ -159,4 +159,43 @@ public class QualityControllerTest {
         Assert.assertThat(actualTrash.get(0), is(expected.get(3)));
         Assert.assertThat(actualTrash.get(0).getPrice(), is(140.0));
     }
+
+    /**
+     * Проверка перераспределения неправильно отсортированных продуктов по хранилищам.
+     */
+    @Test
+    public void whenResortFoodsThenCorrect() {
+        Food one = new Bread("Бородинский", now.minusDays(5), now.plusDays(20), 100, 10);
+        Food two = new Bread("Ржаной", now.minusDays(4), now.plusDays(3), 90, 10);
+        Food three = new Bread("Серый", now.minusDays(5), now.plusDays(1), 110, 10);
+        Food four = new Bread("Батон", now.minusDays(10), now.minusDays(1), 140, 5);
+        List<Store> stores = new ArrayList<>();
+        Store warehouse = new Warehouse();
+        Store shop = new Shop();
+        Store trash = new Trash();
+        trash.add(one);
+        trash.add(two);
+        shop.add(four);
+        warehouse.add(three);
+        stores.add(warehouse);
+        stores.add(shop);
+        stores.add(trash);
+        QualityController qc = new QualityController(stores);
+        qc.resort();
+        List<Food> actualWarehouse = warehouse.getFoods();
+        List<Food> actualShop = shop.getFoods();
+        List<Food> actualTrash = trash.getFoods();
+        Assert.assertThat(actualWarehouse.size(), is(1));
+        Assert.assertTrue(actualWarehouse.contains(one));
+        Assert.assertThat(actualWarehouse.get(0).getPrice(), is(100.0));
+        Assert.assertThat(actualShop.size(), is(2));
+        Assert.assertTrue(actualShop.contains(two));
+        Assert.assertTrue(actualShop.contains(three));
+        actualShop.sort((o1, o2) -> Integer.compare(o1.getName().compareTo(o2.getName()), 0));
+        Assert.assertThat((int) actualShop.get(0).getPrice(), is((int) 90.0));
+        Assert.assertThat((int) actualShop.get(1).getPrice(), is((int) 99.0));
+        Assert.assertThat(actualTrash.size(), is(1));
+        Assert.assertTrue(actualTrash.contains(four));
+        Assert.assertThat(actualTrash.get(0).getPrice(), is(140.0));
+    }
 }

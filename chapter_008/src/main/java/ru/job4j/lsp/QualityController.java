@@ -1,5 +1,6 @@
 package ru.job4j.lsp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,5 +36,17 @@ public class QualityController {
                 }
             }
         }
+    }
+
+    /**
+     * Извлечь и перераспределить все продукты из хранилищ.
+     */
+    public void resort() {
+        List<Food> foodList = new ArrayList<>();
+        for (Store store : this.storages) {
+            foodList.addAll(store.getFoods());
+            store.clearStore();
+        }
+        this.sort(foodList);
     }
 }
