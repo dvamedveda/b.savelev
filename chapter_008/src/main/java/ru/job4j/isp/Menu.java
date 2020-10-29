@@ -14,13 +14,6 @@ public class Menu {
     private List<MenuItem> items;
 
     /**
-     * Конструктор для создания пустого меню.
-     */
-    public Menu() {
-        this.items = new ArrayList<>();
-    }
-
-    /**
      * Конструктор для создания меню из нескольких готовых пунктов.
      *
      * @param menuItems готовые пункты меню.
