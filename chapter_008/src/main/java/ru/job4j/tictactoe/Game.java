@@ -7,8 +7,10 @@ import ru.job4j.tictactoe.io.Input;
 import ru.job4j.tictactoe.io.Printer;
 
 /**
- * Класс, реализующий игру в крестики-нолики в консоли для демонстрации.
+ * Класс, реализующий игру в крестики-нолики для демонстрации.
+ * Здесь используется консольный ввод и вывод данных.
  */
+
 public class Game {
     public static void main(String[] args) {
         Input input = new ConsoleInput();
