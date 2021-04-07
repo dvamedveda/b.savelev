@@ -48,7 +48,7 @@ public class HbmTracker implements Store, AutoCloseable {
      */
     @Override
     public boolean replace(String id, Item item) {
-        boolean result = true;
+        boolean result = false;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             Item updatingItem = session.get(Item.class, Integer.parseInt(id));
@@ -58,8 +58,9 @@ public class HbmTracker implements Store, AutoCloseable {
             updatingItem.setCreated(item.getCreated());
             session.update(updatingItem);
             session.getTransaction().commit();
+            result = true;
         } catch (Exception e) {
-            result = false;
+            e.printStackTrace();
         }
         return result;
     }
@@ -72,14 +73,15 @@ public class HbmTracker implements Store, AutoCloseable {
      */
     @Override
     public boolean delete(String id) {
-        boolean result = true;
+        boolean result = false;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             Item updatingItem = session.get(Item.class, Integer.parseInt(id));
             session.delete(updatingItem);
             session.getTransaction().commit();
+            result = true;
         } catch (Exception e) {
-            result = false;
+            e.printStackTrace();
         }
         return result;
     }
