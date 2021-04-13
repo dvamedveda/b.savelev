@@ -21,8 +21,7 @@ public class ConnectionAuto {
                     config.getProperty("password")
             );
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
+            throw new IllegalStateException(e);
         }
         return result;
     }
