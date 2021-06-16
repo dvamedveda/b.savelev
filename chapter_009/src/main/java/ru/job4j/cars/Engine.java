@@ -1,6 +1,8 @@
 package ru.job4j.cars;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Сущность Двигатель.
@@ -21,6 +23,9 @@ public class Engine {
      */
     @Column(unique = true)
     private String model;
+
+    @OneToMany(mappedBy = "engine")
+    private List<Car> cars = new ArrayList<>();
 
     public Engine() {
 
@@ -44,6 +49,10 @@ public class Engine {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public List<Car> getCars() {
+        return cars;
     }
 
     @Override

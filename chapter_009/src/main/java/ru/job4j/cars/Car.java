@@ -32,7 +32,7 @@ public class Car {
     /**
      * Двигатель машины.
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "engine_id")
     private Engine engine;
 
