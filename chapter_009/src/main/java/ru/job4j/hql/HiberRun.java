@@ -10,12 +10,12 @@ import java.util.List;
 
 /**
  * Демонстрация работы с сущностью при помощи HQL.
- * Важно понимать, что ручные манипуляции с бд рассинхронизовывают хранящиеся в кэше сущности.
+ * Рассматривается механизм изменения стратегии загрузки при запросе.
  */
 public class HiberRun {
 
     public static void main(String[] args) {
-
+        List<Candidate> result = null;
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure("hql.hibernate.cfg.xml").build();
         try {
@@ -24,85 +24,50 @@ public class HiberRun {
             session.beginTransaction();
 
             /*
-            Сохраняем трех кандидатов. Также выполняем принудительный сброс контекста в бд, чтобы хибернейт не затер
-            наши ручные изменения запросами в бд при коммите и закрытии сессии.
+            Сохраняем трех кандидатов с их персональными списками вакансий.
+            Затем заполняем их списки вакансиями.
              */
-            Candidate candidateOne = new Candidate("Ivan", "Junior", 10000);
-            Candidate candidateTwo = new Candidate("Vasiliy", "Middle", 20000);
-            Candidate candidateThree = new Candidate("Petr", "Senior", 30000);
+            Candidate candidateOne = new Candidate("Ivan", "Junior", 10000, new VacancyList("Ivan vacancies list"));
+            Candidate candidateTwo = new Candidate("Vasiliy", "Middle", 20000, new VacancyList("Vasiliy vacancies list"));
+            Candidate candidateThree = new Candidate("Petr", "Senior", 30000, new VacancyList("Petr vacancies list"));
+            Candidate candidateFour = new Candidate("Boris", "Intern", 5000, new VacancyList("Boris vacancies list"));
             session.save(candidateOne);
             session.save(candidateTwo);
             session.save(candidateThree);
-            session.flush();
+            session.save(candidateFour);
 
-            //Выполняем выборку в hql всех сущностей
-            List<Candidate> allCandidates = session.createQuery("from Candidate").getResultList();
-            System.out.println("All candidates: ");
-            for (Candidate candidate : allCandidates) {
-                System.out.println(candidate);
-            }
-            System.out.println("--------------------");
+            candidateTwo.getVacancyList().addVacancy(new Vacancy("Middle to Sber", 10000));
+            candidateTwo.getVacancyList().addVacancy(new Vacancy("Middle to Yandex", 12000));
+            candidateThree.getVacancyList().addVacancy(new Vacancy("Middle to Yandex", 15000));
+            candidateThree.getVacancyList().addVacancy(new Vacancy("Senoir to LANIT", 16000));
+            candidateThree.getVacancyList().addVacancy(new Vacancy("Senior to Tinkoff", 20000));
+            candidateOne.getVacancyList().addVacancy(new Vacancy("Junior to T-System", 9000));
 
-            //Выполняем выборку сущности в hql по id
-            Candidate byId = (Candidate) session
-                    .createQuery("from Candidate c where c.id = :cId")
-                    .setParameter("cId", candidateOne.getId())
-                    .getSingleResult();
-            System.out.println("By id: ");
-            System.out.println(byId);
-            System.out.println("--------------------");
-
-            //Выполняем выборку сущности в hql по имени
-            Candidate byName = (Candidate) session
-                    .createQuery("from Candidate c where c.name = :cName")
-                    .setParameter("cName", candidateThree.getName())
-                    .getSingleResult();
-            System.out.println("By name: ");
-            System.out.println(byName);
-            System.out.println("--------------------");
+            session.save(candidateOne);
+            session.save(candidateTwo);
+            session.save(candidateThree);
 
             /*
-            Выполняем обновление данных в базе при помощи hql.
-            Также предварительно ощищаем кэш первого уровня, чтобы при следующей загрузке сущностей они заново загрузились из бд.
-            Если этого не сделать, данные сущностей в кэше и в бд окажутся рассинхронизированными,
-            а обновление может быть утеряно, когда сущность из кэша будет изменена, и как следствие - сохранена.
+            Получаем список всех кандидатов с их вакансиями.
              */
-            session.clear();
-            session.createQuery("update Candidate c set c.experience = :level where c.name = :cName")
-                    .setParameter("level", "Middle").setParameter("cName", candidateOne.getName()).executeUpdate();
-            List<Candidate> allAfterUpdate = session.createQuery("from Candidate").getResultList();
-            System.out.println("After update: ");
-            for (Candidate candidate : allAfterUpdate) {
-                System.out.println(candidate);
-            }
-            System.out.println("--------------------");
+            result = session.createQuery("select distinct c from Candidate c "
+                    + "join fetch c.vacancyList l "
+                    + "left join fetch l.vacancies v "
+                    + "order by c.id", Candidate.class).list();
 
-            /*
-            Выполняем удаление данных в базе при помощи hql.
-            Также предварительно ощищаем кэш первого уровня, чтобы при следующей загрузке сущностей они заново загрузились из бд.
-            Если этого не сделать, данные сущностей в кэше и в бд окажутся рассинхронизированными,
-            а обновление может быть утеряно, когда сущность из кэша будет изменена, и как следствие - сохранена.
-             */
-            session.clear();
-            session.createQuery("delete from Candidate c where c.id = :cId")
-                    .setParameter("cId", candidateTwo.getId()).executeUpdate();
-            List<Candidate> allAfterDelete = session.createQuery("from Candidate").getResultList();
-            System.out.println("After delete: ");
-            for (Candidate candidate : allAfterDelete) {
-                System.out.println(candidate);
-            }
-            System.out.println("--------------------");
-
-            /*
-            Закрываем сессию. Так как с последнего сброса данных контекста сущности не менялись,
-            то при коммите ничего не записывается.
-             */
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
+        }
+
+        /*
+        Выводим на печать список всех кандидатов с их вакансиями.
+         */
+        for (Candidate candidate : result) {
+            System.out.println(candidate);
         }
     }
 }

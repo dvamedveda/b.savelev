@@ -35,13 +35,20 @@ public class Candidate {
     @Column
     private int salary;
 
+    /**
+     * База вакансий для кандидата
+     */
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private VacancyList vacancyList;
+
     public Candidate() {
     }
 
-    public Candidate(String name, String experience, int salary) {
+    public Candidate(String name, String experience, int salary, VacancyList vacancyList) {
         this.name = name;
         this.experience = experience;
         this.salary = salary;
+        this.vacancyList = vacancyList;
     }
 
     public int getId() {
@@ -76,12 +83,22 @@ public class Candidate {
         this.salary = salary;
     }
 
+    public VacancyList getVacancyList() {
+        return vacancyList;
+    }
+
+    public void setVacancyList(VacancyList vacancyList) {
+        this.vacancyList = vacancyList;
+    }
+
     @Override
     public String toString() {
         return "Candidate{"
                 + "id=" + id
                 + ", name='" + name + '\''
                 + ", experience='" + experience + '\''
-                + ", salary=" + salary + '}';
+                + ", salary=" + salary
+                + ", vacancyList=" + vacancyList
+                + '}';
     }
 }
