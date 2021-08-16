@@ -1,10 +1,8 @@
 package ru.job4j.tracker.tracker;
 
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Класс реализующий хранилище заявок с использованием PostgreSQL.

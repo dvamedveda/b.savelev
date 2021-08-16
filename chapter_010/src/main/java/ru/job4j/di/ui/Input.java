@@ -1,0 +1,24 @@
+package ru.job4j.di.ui;
+
+import java.util.ArrayList;
+
+/**
+ * Интерфейс, описывающий свойство объектов для ввода.
+ */
+public interface Input {
+
+    /**
+     * Метод для запроса данных от пользователя.
+     * @param question вопрос, задаваемый пользователю.
+     * @return ответ пользователя.
+     */
+    String ask(String question);
+
+    /**
+     * Метод для запроса данных от пользователя.
+     * @param question вопрос, задаваемый пользователю.
+     * @param range диапазон допустимых значений.
+     * @return ответ пользователя, содержащий одно из допустимых значений.
+     */
+    int ask(String question, ArrayList<Integer> range);
+}

@@ -1,10 +1,9 @@
-package ru.job4j.tracker.ui;
+package ru.job4j.di.ui;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.job4j.tracker.tracker.ConnectionAuto;
-import ru.job4j.tracker.tracker.SqlTracker;
+import ru.job4j.di.tracker.Tracker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -73,9 +72,9 @@ public class ValidateInputTest {
      */
     @Test
     public void whenInvalidInputFromUserThenGetError() {
-        SqlTracker sqlTracker = new SqlTracker(new ConnectionAuto().init());
+        Tracker tracker = new Tracker();
         Input input = new ValidateInput(new StubInput(new String[]{"abc", "0"}));
-        StartUI ui = new StartUI(sqlTracker, input);
+        StartUI ui = new StartUI(tracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)
@@ -92,9 +91,9 @@ public class ValidateInputTest {
      */
     @Test
     public void whenInvalidMenuNumberThenGetError() {
-        SqlTracker sqlTracker = new SqlTracker(new ConnectionAuto().init());
+        Tracker tracker = new Tracker();
         Input input = new ValidateInput(new StubInput(new String[]{"-1", "0"}));
-        StartUI ui = new StartUI(sqlTracker, input);
+        StartUI ui = new StartUI(tracker, input);
         ui.startWork();
         String expected = new StringBuilder()
                 .append(delimiter)

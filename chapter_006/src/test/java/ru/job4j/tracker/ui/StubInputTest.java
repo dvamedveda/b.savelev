@@ -1,7 +1,6 @@
 package ru.job4j.tracker.ui;
 
 import org.junit.Test;
-import ru.job4j.tracker.tracker.ConnectionAuto;
 import ru.job4j.tracker.tracker.ConnectionRollback;
 import ru.job4j.tracker.tracker.Item;
 import ru.job4j.tracker.tracker.SqlTracker;
@@ -11,7 +10,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
