@@ -6,4 +6,4 @@
  * @since 0.1
  */
 
-package ru.job4j.di.ui;
+package ru.job4j.tracker.ui;

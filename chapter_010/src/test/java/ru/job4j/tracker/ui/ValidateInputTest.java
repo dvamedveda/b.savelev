@@ -1,9 +1,9 @@
-package ru.job4j.di.ui;
+package ru.job4j.tracker.ui;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.job4j.di.tracker.Tracker;
+import ru.job4j.tracker.tracker.Tracker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

@@ -1,6 +1,6 @@
-package ru.job4j.di.ui;
+package ru.job4j.tracker.ui;
 
-import ru.job4j.di.tracker.Tracker;
+import ru.job4j.tracker.tracker.Tracker;
 
 /**
  * Интерфейс, описывающий действия пользователя в меню.

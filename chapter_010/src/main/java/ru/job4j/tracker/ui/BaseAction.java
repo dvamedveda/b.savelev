@@ -1,4 +1,4 @@
-package ru.job4j.di.ui;
+package ru.job4j.tracker.ui;
 
 /**
  * Класс, реализующий основные методы пунктов меню.

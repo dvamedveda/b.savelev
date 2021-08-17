@@ -1,4 +1,4 @@
-package ru.job4j.di;
+package ru.job4j.tracker;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
