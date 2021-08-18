@@ -2,6 +2,7 @@ package ru.job4j.di;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.*;
 
@@ -21,11 +22,10 @@ public class StartUITest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setIn(in);
         System.setOut(new PrintStream(out));
-        Context context = new Context();
-        context.register(ConsoleInput.class);
-        context.register(Store.class);
-        context.register(StartUI.class);
-        StartUI ui = context.get(StartUI.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("ru.job4j.di");
+        context.refresh();
+        StartUI ui = context.getBean(StartUI.class);
         ui.askAndAdd();
         ui.print();
         String actual = out.toString();

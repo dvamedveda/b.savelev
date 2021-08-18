@@ -1,5 +1,6 @@
 package ru.job4j.di;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,23 +12,14 @@ public class StartUI {
     /**
      * Хранилище данных.
      */
+    @Autowired
     private Store store;
 
     /**
      * Класс для получения данных.
      */
+    @Autowired
     private ConsoleInput input;
-
-    /**
-     * Конструктор главного класса.
-     *
-     * @param store хранилище данных.
-     * @param input класс ввода данных.
-     */
-    public StartUI(Store store, ConsoleInput input) {
-        this.store = store;
-        this.input = input;
-    }
 
     /**
      * Получить от пользователя строку и добавить в хранилище.
