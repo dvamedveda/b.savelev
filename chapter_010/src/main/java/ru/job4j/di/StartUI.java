@@ -1,8 +1,11 @@
 package ru.job4j.di;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Основной класс для работы программы.
  */
+@Component
 public class StartUI {
 
     /**

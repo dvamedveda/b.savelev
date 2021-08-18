@@ -1,11 +1,14 @@
 package ru.job4j.di;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Класс для хранения данных.
  */
+@Component
 public class Store {
 
     /**
