@@ -14,5 +14,7 @@ public class SpringMain {
         ui.askAndAdd();
         ui.askAndAdd();
         ui.print();
+        StartUI anotherUi = context.getBean(StartUI.class);
+        anotherUi.print();
     }
 }
